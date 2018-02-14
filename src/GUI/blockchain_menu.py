@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from  PyQt5.QtGui import QMovie
+from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
+
+from src.Miner import Miner
 
 
 class StartWindow(QtWidgets.QMainWindow):
@@ -12,6 +14,7 @@ class StartWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(QtWidgets.QMainWindow, self).__init__(parent=parent)
         self.setupUi(self)
+        self.User = Miner()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -150,17 +153,16 @@ class StartWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
-
     def mouse_pressed(self, *args):
+        """Здесь фиксируется клик пользователя"""
+        self.User.click()
+        print(self.User.count)
         if self.m.state() != 2:
             self.m.start()
 
-
     def finish(self, *args):
-        if self.m.currentFrameNumber() == (self.m.frameCount()-1):
+        if self.m.currentFrameNumber() == (self.m.frameCount() - 1):
             self.m.stop()
 
     def closeIt(self):
         self.close()
-
-

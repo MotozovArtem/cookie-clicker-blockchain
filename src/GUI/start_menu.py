@@ -111,11 +111,10 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.footer.setText(_translate("MainWindow", "@Created_by"))
 
     def mouse_pressed(self, event):
-        window = StartWindow()
+        window = StartWindow(self)
         setMoveWindow(window)
-        self.MainWindow.hide()
+        self.hide()
         window.show()
-
 
     def closeIt(self):
         self.close()

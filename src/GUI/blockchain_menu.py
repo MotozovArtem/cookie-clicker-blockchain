@@ -5,12 +5,16 @@ from  PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
-
+from blockchain_stat import Ui_Form
+from submodules.fake_blockchain import get_blockchain_info
+from submodules.windows_settings import setMoveWindow
+from submodules.sys_dialogs import ExceptionDialog, InfoDialog
 
 class StartWindow(QtWidgets.QMainWindow):
 
-    def __init__(self, parent=None):
-        super(QtWidgets.QMainWindow, self).__init__(parent=parent)
+    def __init__(self, parent):
+        QtWidgets.QMainWindow.__init__(self)
+        self.parent = parent
         self.setupUi(self)
 
     def setupUi(self, MainWindow):
@@ -50,6 +54,7 @@ class StartWindow(QtWidgets.QMainWindow):
         self.stat.setIconSize(QtCore.QSize(32, 32))
         self.stat.setFlat(True)
         self.stat.setObjectName("stat")
+        self.stat.clicked.connect(self.show_stat)
         self.horizontalLayout_7.addWidget(self.stat)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem1)
@@ -65,6 +70,7 @@ class StartWindow(QtWidgets.QMainWindow):
         self.info.setIcon(icon1)
         self.info.setIconSize(QtCore.QSize(32, 32))
         self.info.setFlat(True)
+        self.info.clicked.connect(self.show_info)
         self.info.setObjectName("info")
         self.horizontalLayout_7.addWidget(self.info)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -150,6 +156,14 @@ class StartWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
+    def show_stat(self):
+        window = Ui_Form(self,get_blockchain_info(15)) #отсюда вызываю функция получения статистики по блокчейну
+        setMoveWindow(window)                          #в blockchain_stat в функции get_block_desc показано как я представляю структуру блока
+        self.hide()
+        window.show()
+
+    def show_info(self):
+        InfoDialog(self, "Die Hard.Die but hard")
 
     def mouse_pressed(self, *args):
         if self.m.state() != 2:
@@ -161,6 +175,8 @@ class StartWindow(QtWidgets.QMainWindow):
             self.m.stop()
 
     def closeIt(self):
+        self.parent.show()
         self.close()
+
 
 

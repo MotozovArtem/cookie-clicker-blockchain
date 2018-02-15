@@ -9,7 +9,7 @@ from PyQt5.QtCore import *
 from PyQt5 import QtGui
 from blockchain_menu import StartWindow
 from submodules.windows_settings import setMoveWindow
-
+from submodules.sys_dialogs import UserDialog
 
 class Start_Menu(QtWidgets.QMainWindow):
 
@@ -108,6 +108,13 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.footer.setText(_translate("MainWindow", "@Created_by"))
 
     def mouse_pressed(self, event):
+        while True:
+            nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
+            if nick == None or nick == "":
+                continue
+            else:
+                self.user_nickname = nick
+                break
         window = StartWindow(self)
         setMoveWindow(window)
         self.hide()

@@ -9,8 +9,8 @@ from PyQt5 import QtGui
 from blockchain_stat import Ui_Form
 from submodules.fake_blockchain import get_blockchain_info
 from submodules.windows_settings import setMoveWindow
-from submodules.sys_dialogs import ExceptionDialog, InfoDialog
-
+from submodules.sys_dialogs import ExceptionDialog, InfoDialog, WarningDialog
+from submodules.sys_dialogs import UserDialog
 
 # from src.Miner import Miner
 
@@ -21,7 +21,7 @@ class StartWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.parent = parent
         self.setupUi(self)
-        self.User = Miner()
+        # self.User = Miner()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -170,12 +170,22 @@ class StartWindow(QtWidgets.QMainWindow):
         window.show()
 
     def show_info(self):
-        InfoDialog(self, "Die Hard.Die but hard")
+
+        dialog = InfoDialog(self.label, "Info","A blockchain - a continuously growing list of records, called blocks, which are linked and secured using cryptography.")
+        dialog.show()
+
+    def ask_for_comment(self):        #User`ve made block and we ask for comment
+        comment = UserDialog(self).get_answer("Proved!!!", "Congratulations!\nYou mined the block.\n Please enter your comment:")
+        #TODO: Нужно ещё проверить на пустой комментарий
+
+    def show_warning(self): #Show user that someone else has mined the block
+        dialog = InfoDialog(self.label, "Warning","Your opponents have already mined the block!!!")
+        dialog.show()
 
     def mouse_pressed(self, *args):
         """Здесь фиксируется клик пользователя"""
-        self.User.click()
-        print(self.User.count)
+        # self.User.click()
+        # print(self.User.count)
         if self.m.state() != 2:
             self.m.start()
 

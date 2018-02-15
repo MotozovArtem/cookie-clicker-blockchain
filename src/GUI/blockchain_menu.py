@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from  PyQt5.QtGui import QMovie
+from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
+
 from blockchain_stat import Ui_Form
 from submodules.fake_blockchain import get_blockchain_info
 from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import ExceptionDialog, InfoDialog
+
+
+# from src.Miner import Miner
+
 
 class StartWindow(QtWidgets.QMainWindow):
 
@@ -16,6 +21,7 @@ class StartWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.parent = parent
         self.setupUi(self)
+        self.User = Miner()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -156,6 +162,7 @@ class StartWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
+
     def show_stat(self):
         window = Ui_Form(self,get_blockchain_info(15)) #отсюда вызываю функция получения статистики по блокчейну
         setMoveWindow(window)                          #в blockchain_stat в функции get_block_desc показано как я представляю структуру блока
@@ -166,17 +173,17 @@ class StartWindow(QtWidgets.QMainWindow):
         InfoDialog(self, "Die Hard.Die but hard")
 
     def mouse_pressed(self, *args):
+        """Здесь фиксируется клик пользователя"""
+        self.User.click()
+        print(self.User.count)
         if self.m.state() != 2:
             self.m.start()
 
-
     def finish(self, *args):
-        if self.m.currentFrameNumber() == (self.m.frameCount()-1):
+        if self.m.currentFrameNumber() == (self.m.frameCount() - 1):
             self.m.stop()
 
     def closeIt(self):
         self.parent.show()
         self.close()
-
-
 

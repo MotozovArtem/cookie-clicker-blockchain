@@ -3,13 +3,12 @@
 
 import sys
 
-from  PyQt5.QtGui import QMovie
+from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 from blockchain_menu import StartWindow
 from submodules.windows_settings import setMoveWindow
-
 
 
 class Start_Menu(QtWidgets.QMainWindow):
@@ -18,9 +17,7 @@ class Start_Menu(QtWidgets.QMainWindow):
         super(QtWidgets.QMainWindow, self).__init__(parent=parent)
         self.setupUi(self)
 
-
     def setupUi(self, MainWindow):
-
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1200, 800)
         MainWindow.setStyleSheet("background-color: rgb(0, 0, 0);")
@@ -64,7 +61,7 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.pushButton.setObjectName("pushButton")
 
         self.pushButton.clicked.connect(self.closeIt)
-        self.horizontalLayout.addWidget(self.pushButton, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.horizontalLayout.addWidget(self.pushButton, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.main_btn = QtWidgets.QLabel(self.centralwidget)
         self.main_btn.setText("")
@@ -120,9 +117,7 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.close()
 
 
-
 if __name__ == "__main__":
-
     app = QtWidgets.QApplication(sys.argv)
     try:
         window = Start_Menu()

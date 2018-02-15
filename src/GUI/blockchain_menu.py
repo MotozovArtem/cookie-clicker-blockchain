@@ -17,11 +17,11 @@ from submodules.sys_dialogs import ExceptionDialog, InfoDialog
 
 class StartWindow(QtWidgets.QMainWindow):
 
-    def __init__(self, parent):
+    def __init__(self, parent, miner):
         QtWidgets.QMainWindow.__init__(self)
         self.parent = parent
         self.setupUi(self)
-        self.User = Miner()
+        self.miner = miner
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -162,11 +162,10 @@ class StartWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
-
     def show_stat(self):
-        window = Ui_Form(self,get_blockchain_info(15)) #отсюда вызываю функция получения статистики по блокчейну
-        setMoveWindow(window)                          #в blockchain_stat в функции get_block_desc показано как я представляю структуру блока
-        self.hide()
+        window = Ui_Form(self,get_blockchain_info(15))  # отсюда вызываю функция получения статистики по блокчейну
+        setMoveWindow(window)                           # в blockchain_stat в функции get_block_desc показано как я
+        self.hide()                                     # представляю структуру блока
         window.show()
 
     def show_info(self):
@@ -178,6 +177,7 @@ class StartWindow(QtWidgets.QMainWindow):
         print(self.User.count)
         if self.m.state() != 2:
             self.m.start()
+        self.miner.click()
 
     def finish(self, *args):
         if self.m.currentFrameNumber() == (self.m.frameCount() - 1):

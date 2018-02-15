@@ -2,13 +2,17 @@
 
 
 import sys
+from uuid import uuid4
 
 from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
-from blockchain_menu import StartWindow
-from submodules.windows_settings import setMoveWindow
+from src.GUI.blockchain_menu import StartWindow
+from src.GUI.submodules.windows_settings import setMoveWindow
+from src.Blockchain import Blockchain
+from src.Miner import Miner
+from src import Server
 
 
 class Start_Menu(QtWidgets.QMainWindow):
@@ -16,6 +20,8 @@ class Start_Menu(QtWidgets.QMainWindow):
     def __init__(self, parent=None, *args, **kwargs):
         super(QtWidgets.QMainWindow, self).__init__(parent=parent)
         self.setupUi(self)
+        self.author = str(uuid4())  # При перезапуске проги он перегенится. Критично ли это?
+        self.miner = Miner(Blockchain(self.author))
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -108,10 +114,11 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.footer.setText(_translate("MainWindow", "@Created_by"))
 
     def mouse_pressed(self, event):
-        window = StartWindow(self)
+        window = StartWindow(self, self.miner)
         setMoveWindow(window)
         self.hide()
         window.show()
+        Server.run_server()
 
     def closeIt(self):
         self.close()

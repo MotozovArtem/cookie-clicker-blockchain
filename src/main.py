@@ -6,6 +6,8 @@ from src.Blockchain import Blockchain
 # Instantiate the Node
 app = Flask(__name__)
 
+''' Имеет ли смысл вообще это оставлять?'''
+
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
 

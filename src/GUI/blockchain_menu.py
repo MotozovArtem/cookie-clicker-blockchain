@@ -162,19 +162,30 @@ class StartWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
+
     def show_stat(self):
-        window = Ui_Form(self,get_blockchain_info(15))  # отсюда вызываю функция получения статистики по блокчейну
-        setMoveWindow(window)                           # в blockchain_stat в функции get_block_desc показано как я
-        self.hide()                                     # представляю структуру блока
+        window = Ui_Form(self,get_blockchain_info(15)) #отсюда вызываю функция получения статистики по блокчейну
+        setMoveWindow(window)                          #в blockchain_stat в функции get_block_desc показано как я представляю структуру блока
+        self.hide()
         window.show()
 
     def show_info(self):
-        InfoDialog(self, "Die Hard.Die but hard")
+
+        dialog = InfoDialog(self.label, "Info","A blockchain - a continuously growing list of records, called blocks, which are linked and secured using cryptography.")
+        dialog.show()
+
+    def ask_for_comment(self):        #User`ve made block and we ask for comment
+        comment = UserDialog(self).get_answer("Proved!!!", "Congratulations!\nYou mined the block.\n Please enter your comment:")
+        #TODO: Нужно ещё проверить на пустой комментарий
+
+    def show_warning(self): #Show user that someone else has mined the block
+        dialog = InfoDialog(self.label, "Warning","Your opponents have already mined the block!!!")
+        dialog.show()
 
     def mouse_pressed(self, *args):
         """Здесь фиксируется клик пользователя"""
-        self.User.click()
-        print(self.User.count)
+        # self.User.click()
+        # print(self.User.count)
         if self.m.state() != 2:
             self.m.start()
         self.miner.click()

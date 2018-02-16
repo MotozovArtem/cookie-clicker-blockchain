@@ -4,4 +4,5 @@
 
 Required libraries:\
 requests v2.18.4\
-Flask V0.12.2
+Flask V0.12.2\
+twisted 17.9.0

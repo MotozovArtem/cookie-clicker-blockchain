@@ -14,6 +14,9 @@ from src.Blockchain import Blockchain
 from src.Miner import Miner
 from src import Server
 
+from blockchain_menu import StartWindow
+from submodules.windows_settings import setMoveWindow
+from submodules.sys_dialogs import UserDialog
 
 class Start_Menu(QtWidgets.QMainWindow):
 
@@ -115,6 +118,14 @@ class Start_Menu(QtWidgets.QMainWindow):
 
     def mouse_pressed(self, event):
         window = StartWindow(self, self.miner)
+        while True:
+            nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
+            if nick == None or nick == "":
+                continue
+            else:
+                self.user_nickname = nick
+                break
+        window = StartWindow(self)
         setMoveWindow(window)
         self.hide()
         window.show()

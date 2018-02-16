@@ -1,5 +1,3 @@
-
-
 class Miner:
     def __init__(self, blockchain):
         self.blockchain = blockchain
@@ -8,17 +6,21 @@ class Miner:
     def click(self):
         self.count += 1
         if self.count == self.blockchain.curr_proof:
-            self.update()
+            raise SuccessException()
 
-    def update(self):
+    def update(self, message):
         """при достижении нужного кол-ва кликов создается новый блок, счетчик обнуляется и пруф в объекте Blockchain
         инкрементится """
-        self.blockchain.new_block(self.blockchain.curr_proof, comment=self.open_comment_window())
+        new_block = self.blockchain.new_block(self.blockchain.curr_proof, None, comment=message)
+        # print("New Block")
         self.count = 0
-        self.blockchain.curr_proof += 1
+        self.blockchain.curr_proof += 1  # Увеличение кол-ва кликов для майнинга (MAX_COUNT)
+        # print(len(self.blockchain.chain))
+        # TODO: Здесь нужно послать полученный блок
 
-    def open_comment_window(self):
-        """Сначала всех оповещаем о созданном блоке, затем все остальное"""
-        # send_a_message_that_i've_created_a_block()
-        # everything_else()
-        pass
+
+
+class SuccessException(Exception):
+    def __init__(self, msg="Success"):
+        super().__init__()
+        self.msg = msg

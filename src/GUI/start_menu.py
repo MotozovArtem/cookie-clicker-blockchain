@@ -117,7 +117,7 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.footer.setText(_translate("MainWindow", "@Created_by"))
 
     def mouse_pressed(self, event):
-        window = StartWindow(self, self.miner)
+        # window = StartWindow(self, self.miner)
         while True:
             nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
             if nick == None or nick == "":
@@ -125,7 +125,7 @@ class Start_Menu(QtWidgets.QMainWindow):
             else:
                 self.user_nickname = nick
                 break
-        window = StartWindow(self)
+        window = StartWindow(self, self.miner)
         setMoveWindow(window)
         self.hide()
         window.show()
@@ -143,5 +143,4 @@ if __name__ == "__main__":
         window.show()
     except Exception as e:
         print(e)
-
     sys.exit(app.exec_())

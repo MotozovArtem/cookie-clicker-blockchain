@@ -30,7 +30,6 @@ class Blockchain:
     #         raise ValueError('Invalid URL')
 
     def new_block(self, proof, previous_hash, comment="generic comment"):
-
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),

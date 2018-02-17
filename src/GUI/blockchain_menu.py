@@ -6,25 +6,26 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 
-from blockchain_stat import Ui_Form
-from submodules.fake_blockchain import get_blockchain_info
-from submodules.windows_settings import setMoveWindow
-from submodules.sys_dialogs import ExceptionDialog, InfoDialog
-from submodules.sys_dialogs import UserDialog
+from src.GUI.blockchain_stat import Ui_Form
+from src.GUI.submodules.windows_settings import setMoveWindow
+from src.GUI.submodules.sys_dialogs import ExceptionDialog, InfoDialog
+from src.GUI.submodules.sys_dialogs import UserDialog
 
 
 from src.Miner import Miner, SuccessException
-
-from src.Server import BlockChainServer
+import threading
 
 class StartWindow(QtWidgets.QMainWindow):
 
-    def __init__(self, parent, miner, server):
+    def __init__(self, parent, miner, client):
         QtWidgets.QMainWindow.__init__(self)
         self.parent = parent
         self.setupUi(self)
         self.miner = miner
-        self.server = server
+        self.client = client
+        self.thread = threading.Thread(target=self.show_warning())
+        self.thread.daemon = True
+        self.thread.start()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -166,7 +167,7 @@ class StartWindow(QtWidgets.QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
     def show_stat(self):
-        window = Ui_Form(self, get_blockchain_info(15))  # отсюда вызываю функция получения статистики по блокчейну
+        window = Ui_Form(self, self.miner.blockchain.chain)  # отсюда вызываю функция получения статистики по блокчейну
         setMoveWindow(window)  # в blockchain_stat в функции get_block_desc показано как я представляю структуру блока
         self.hide()
         window.show()
@@ -177,15 +178,23 @@ class StartWindow(QtWidgets.QMainWindow):
         dialog.show()
 
     def ask_for_comment(self):  # User`ve made block and we ask for comment
+        self.client.send_notifi()
         comment = UserDialog(self).get_answer("Proved!!!",
                                               "Congratulations!\nYou mined the block.\n Please enter your comment:")
-        self.server.handle_write()
-        self.miner.update(comment)
+        # self.client.handle_write()
+        if comment:
+            self.miner.update(comment)
+        else:
+            self.miner.update("Default comment")
         # TODO: Нужно ещё проверить на пустой комментарий
 
     def show_warning(self):  # Show user that someone else has mined the block
-        dialog = InfoDialog(self.label, "Warning", "Your opponents have already mined the block!!!")
-        dialog.show()
+        while True:
+            if self.client.notifi_flag == True:
+                dialog = InfoDialog(self.label, "Warning", "Your opponents have already mined the block!!!")
+                dialog.show()
+
+
 
     def mouse_pressed(self, *args):
         """Здесь фиксируется клик пользователя"""

@@ -1,9 +1,7 @@
 import hashlib
 import json
 from time import time
-from urllib.parse import urlparse
 
-import requests
 
 
 class Blockchain:
@@ -31,13 +29,13 @@ class Blockchain:
 
     def new_block(self, proof, previous_hash, comment="generic comment"):
         block = {
-            'index': len(self.chain) + 1,
             'timestamp': time(),
             'proof': proof or self.curr_proof,
             'comment': comment,
             'author': self.author,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
         }
+        block['hash'] = hash(str(block).encode())
         self.chain.append(block)
         return block
 
@@ -146,6 +144,6 @@ class Blockchain:
         :return: <bool> True if correct, False if not.
         """
 
-        guess = f'{last_proof}{proof}{last_hash}'.encode()
+        guess = str(str(last_proof)+str(proof)+str(last_hash)).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"

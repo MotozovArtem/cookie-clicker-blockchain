@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5 import QtCore, QtGui, QtWidgets
-from  PyQt5.QtGui import QMovie
+
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
-from PyQt5 import *
-from submodules.windows_settings import setMoveWindow
 from graphviz import Digraph
 from PyQt5.QtOpenGL import *
 from PyQt5.QtGui import *
@@ -88,7 +84,7 @@ class Ui_Form(QtWidgets.QWidget):
                 "  Comment: {2};\n"
                 "  Proof: {3};\n"
                 "  Date: {4};\n"
-                "  Prev_block: {5};").format(block["hash"], block["author"],block["comment"],block["proof"],block["create_date"],block["prev_block"],)
+                "  Prev_block: {5};").format(block["hash"], block["author"],block["comment"],block["proof"],block["timestamp"],block["previous_hash"],)
         return text
 
     def set_blockchain_graph(self,blockchain):

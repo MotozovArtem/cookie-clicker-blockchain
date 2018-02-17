@@ -12,22 +12,20 @@ from src.GUI.blockchain_menu import StartWindow
 from src.GUI.submodules.windows_settings import setMoveWindow
 from src.Blockchain import Blockchain
 from src.Miner import Miner
-from src.Server import BlockChainServer
+from src.Client import Client
 import asyncore
 
-from blockchain_menu import StartWindow
-from submodules.windows_settings import setMoveWindow
-from submodules.sys_dialogs import UserDialog
-
-
+from src.GUI.blockchain_menu import StartWindow
+from src.GUI.submodules.windows_settings import setMoveWindow
+from src.GUI.submodules.sys_dialogs import UserDialog
+from multiprocessing import Process
+import traceback
 class Start_Menu(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None, *args, **kwargs):
         super(QtWidgets.QMainWindow, self).__init__(parent=parent)
         self.setupUi(self)
-        self.author = str(uuid4())  # При перезапуске проги он перегенится. Критично ли это?
-        self.miner = Miner(Blockchain(self.author))
-        self.server = BlockChainServer("127.0.0.1", 8001)
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -120,19 +118,32 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.footer.setText(_translate("MainWindow", "@Created_by"))
 
     def mouse_pressed(self, event):
-        # window = StartWindow(self, self.miner)
-        while True:
-            nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
-            if nick == None or nick == "":
-                continue
-            else:
-                self.user_nickname = nick
-                break
-        window = StartWindow(self, self.miner, self.server)
-        setMoveWindow(window)
-        self.hide()
-        window.show()
-        asyncore.loop(600)
+        try:
+            # window = StartWindow(self, self.miner)
+            while True:
+                nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
+                if nick == None or nick == "":
+                    continue
+                else:
+                    self.user_nickname = nick
+                    break
+            self.author = str(self.user_nickname)  # При перезапуске проги он перегенится. Критично ли это?
+            self.blockchain = Blockchain(self.author)
+
+            self.client = Client(self.blockchain)
+            self.miner = Miner(self.blockchain, self.client)
+            self.process = Process(target=self.client)
+            self.process.daemon = True
+            self.process.start()
+            # process.join() ??
+
+            window = StartWindow(self, self.miner, self.client)
+            setMoveWindow(window)
+            self.hide()
+            window.show()
+            # asyncore.loop(600)
+        except Exception:
+            print(traceback.format_exc())
 
     def closeIt(self):
         self.close()

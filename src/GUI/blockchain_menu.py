@@ -15,14 +15,16 @@ from submodules.sys_dialogs import UserDialog
 
 from src.Miner import Miner, SuccessException
 
+from src.Server import BlockChainServer
 
 class StartWindow(QtWidgets.QMainWindow):
 
-    def __init__(self, parent, miner):
+    def __init__(self, parent, miner, server):
         QtWidgets.QMainWindow.__init__(self)
         self.parent = parent
         self.setupUi(self)
         self.miner = miner
+        self.server = server
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -177,8 +179,8 @@ class StartWindow(QtWidgets.QMainWindow):
     def ask_for_comment(self):  # User`ve made block and we ask for comment
         comment = UserDialog(self).get_answer("Proved!!!",
                                               "Congratulations!\nYou mined the block.\n Please enter your comment:")
+        self.server.handle_write()
         self.miner.update(comment)
-        # print(comment)
         # TODO: Нужно ещё проверить на пустой комментарий
 
     def show_warning(self):  # Show user that someone else has mined the block

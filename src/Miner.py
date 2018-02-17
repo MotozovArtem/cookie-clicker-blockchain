@@ -1,3 +1,6 @@
+from src.Server import *
+
+
 class Miner:
     def __init__(self, blockchain):
         self.blockchain = blockchain
@@ -17,7 +20,6 @@ class Miner:
         self.blockchain.curr_proof += 1  # Увеличение кол-ва кликов для майнинга (MAX_COUNT)
         # print(len(self.blockchain.chain))
         # TODO: Здесь нужно послать полученный блок
-
 
 
 class SuccessException(Exception):

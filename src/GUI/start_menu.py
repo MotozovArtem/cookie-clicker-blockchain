@@ -12,11 +12,13 @@ from src.GUI.blockchain_menu import StartWindow
 from src.GUI.submodules.windows_settings import setMoveWindow
 from src.Blockchain import Blockchain
 from src.Miner import Miner
-from src import Server
+from src.Server import BlockChainServer
+import asyncore
 
 from blockchain_menu import StartWindow
 from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import UserDialog
+
 
 class Start_Menu(QtWidgets.QMainWindow):
 
@@ -25,6 +27,7 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.setupUi(self)
         self.author = str(uuid4())  # При перезапуске проги он перегенится. Критично ли это?
         self.miner = Miner(Blockchain(self.author))
+        self.server = BlockChainServer("127.0.0.1", 8001)
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -125,11 +128,11 @@ class Start_Menu(QtWidgets.QMainWindow):
             else:
                 self.user_nickname = nick
                 break
-        window = StartWindow(self, self.miner)
+        window = StartWindow(self, self.miner, self.server)
         setMoveWindow(window)
         self.hide()
         window.show()
-        Server.run_server()
+        asyncore.loop(600)
 
     def closeIt(self):
         self.close()

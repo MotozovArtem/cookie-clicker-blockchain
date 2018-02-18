@@ -8,16 +8,16 @@ from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
-from src.GUI.blockchain_menu import StartWindow
-from src.GUI.submodules.windows_settings import setMoveWindow
-from src.Blockchain import Blockchain
-from src.Miner import Miner
-from src.Client import Client
+from blockchain_menu import StartWindow
+from submodules.windows_settings import setMoveWindow
+from Blockchain import Blockchain
+from Miner import Miner
+from Client import Client
 import asyncore
 
-from src.GUI.blockchain_menu import StartWindow
-from src.GUI.submodules.windows_settings import setMoveWindow
-from src.GUI.submodules.sys_dialogs import UserDialog
+from blockchain_menu import StartWindow
+from submodules.windows_settings import setMoveWindow
+from submodules.sys_dialogs import UserDialog
 from multiprocessing import Process
 import traceback
 class Start_Menu(QtWidgets.QMainWindow):

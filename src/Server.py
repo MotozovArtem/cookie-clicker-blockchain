@@ -1,4 +1,4 @@
-from src.Blockchain import Blockchain
+from Blockchain import Blockchain
 import json
 import socket
 import logging
@@ -12,8 +12,7 @@ class Server:
         logging.basicConfig(level=logging.DEBUG)
         self.blockchain = Blockchain("Genesis")
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # self.server_address = socket.gethostbyname(socket.gethostname())
-        self.server_address = "127.0.0.1"
+        self.server_address = socket.gethostbyname(socket.gethostname())
         self.server_port = 7000
         self.sock.bind((self.server_address, self.server_port))
         thread = threading.Thread(target=self.receive_message)

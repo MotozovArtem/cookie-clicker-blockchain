@@ -15,8 +15,8 @@ class Client:
             self.blockchain = blockchain
             self.sock = socket.socket(socket.AF_INET,  # Internet
                                  socket.SOCK_DGRAM)  # UDP
-            # self.client_address =  socket.gethostbyname(socket.gethostname())
-            self.client_address =  "127.0.0.1"
+            self.client_address =  socket.gethostbyname(socket.gethostname())
+            # self.client_address =  "127.0.0.1"
             self.sock.bind((self.client_address, self.port))
             self.send_hello()
             print("Yess")

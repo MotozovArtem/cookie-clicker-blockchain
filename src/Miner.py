@@ -1,4 +1,4 @@
-from src.Client import *
+from Client import *
 
 
 class Miner:

@@ -63,7 +63,7 @@ class Client:
     def send_hello(self):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         hello_message = "hello " + str("("+str(self.client_address)+","+str(self.port)+")")
-        self.sock.sendto(hello_message.encode(), ('127.0.0.1', 7000)) #TODO не забыть изменить обратно
+        self.sock.sendto(hello_message.encode(), ('255.255.255.255', 7000)) #TODO не забыть изменить обратно
 
 
 

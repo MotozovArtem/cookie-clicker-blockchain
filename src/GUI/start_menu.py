@@ -131,13 +131,16 @@ class Start_Menu(QtWidgets.QMainWindow):
             self.blockchain = Blockchain(self.author)
 
             self.client = Client(self.blockchain)
+            print("OOP000")
             self.miner = Miner(self.blockchain, self.client)
-            self.process = Process(target=self.client)
-            self.process.daemon = True
-            self.process.start()
+            # self.process = Process(target=self.client.main_run)
+            # self.process.daemon = True
+            # self.process.start()
+            # self.process.join()
             # process.join() ??
-
+            print("OOP")
             window = StartWindow(self, self.miner, self.client)
+            print("1")
             setMoveWindow(window)
             self.hide()
             window.show()

@@ -23,9 +23,9 @@ class StartWindow(QtWidgets.QMainWindow):
         self.setupUi(self)
         self.miner = miner
         self.client = client
-        self.thread = threading.Thread(target=self.show_warning())
-        self.thread.daemon = True
-        self.thread.start()
+        # self.thread = threading.Thread(target=self.show_warning())
+        # self.thread.daemon = True
+        # self.thread.start()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")

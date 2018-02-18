@@ -1,108 +1,24 @@
 // Blockchain
 digraph {
 	rankdir=LR size="1200, 800"
-	J79KWD0252PR [label="  Hash: J79KWD0252PR;
-  Author: QBGUDU;
-  Comment: GWJINRE;
-  Proof: 28;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	RBOF6Y219RJQ [label="  Hash: RBOF6Y219RJQ;
-  Author: GBTVPR;
-  Comment: IVQBSTV;
-  Proof: 56;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	J79KWD0252PR -> RBOF6Y219RJQ
-	"85Q5HWD9EIT6" [label="  Hash: 85Q5HWD9EIT6;
-  Author: JTMSFV;
-  Comment: KGGBTHB;
-  Proof: 17;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	RBOF6Y219RJQ -> "85Q5HWD9EIT6"
-	GIJ4YXTH0XQ3 [label="  Hash: GIJ4YXTH0XQ3;
-  Author: ZXNEEP;
-  Comment: RFJKHQC;
-  Proof: 48;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	"85Q5HWD9EIT6" -> GIJ4YXTH0XQ3
-	VDP9SPG3SK8L [label="  Hash: VDP9SPG3SK8L;
-  Author: NRQOJW;
-  Comment: DJTAMTT;
-  Proof: 83;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	GIJ4YXTH0XQ3 -> VDP9SPG3SK8L
-	JTP5DEG4UYPW [label="  Hash: JTP5DEG4UYPW;
-  Author: JGKVMW;
-  Comment: OVLNULH;
-  Proof: 86;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	VDP9SPG3SK8L -> JTP5DEG4UYPW
-	HC4RB9R7WQ0G [label="  Hash: HC4RB9R7WQ0G;
-  Author: RVITZM;
-  Comment: CLJDGEC;
-  Proof: 82;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	JTP5DEG4UYPW -> HC4RB9R7WQ0G
-	A13NDQ2Q3HPM [label="  Hash: A13NDQ2Q3HPM;
-  Author: ANQMWC;
-  Comment: UVLJMNP;
-  Proof: 84;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	HC4RB9R7WQ0G -> A13NDQ2Q3HPM
-	KY6TC9W10BKJ [label="  Hash: KY6TC9W10BKJ;
-  Author: YNIIFI;
-  Comment: YTSVOYX;
-  Proof: 40;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	A13NDQ2Q3HPM -> KY6TC9W10BKJ
-	SMND7EQTRMQ9 [label="  Hash: SMND7EQTRMQ9;
-  Author: FYGFJK;
-  Comment: YIWLZCO;
-  Proof: 29;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	KY6TC9W10BKJ -> SMND7EQTRMQ9
-	"3GEHBPVQORSS" [label="  Hash: 3GEHBPVQORSS;
-  Author: ITZKQC;
-  Comment: VAHGCRJ;
-  Proof: 33;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	SMND7EQTRMQ9 -> "3GEHBPVQORSS"
-	Z6UKOCOCU1SJ [label="  Hash: Z6UKOCOCU1SJ;
-  Author: VMTHNV;
-  Comment: CQQOEYW;
-  Proof: 35;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	"3GEHBPVQORSS" -> Z6UKOCOCU1SJ
-	RQYBQ6K813VH [label="  Hash: RQYBQ6K813VH;
-  Author: UZEUBL;
-  Comment: HMGEJSC;
-  Proof: 92;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	Z6UKOCOCU1SJ -> RQYBQ6K813VH
-	BT8FM3HOQUAQ [label="  Hash: BT8FM3HOQUAQ;
-  Author: GEGYWA;
-  Comment: WIKRISC;
-  Proof: 82;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	RQYBQ6K813VH -> BT8FM3HOQUAQ
-	ZEVTDV3I7C3J [label="  Hash: ZEVTDV3I7C3J;
-  Author: UEPLEQ;
-  Comment: EWXRYME;
-  Proof: 43;
-  Date: 12:04:54;
-  Prev_block: 184962b539823eb979a728f9d367e362322c9755;" shape=rectangle]
-	BT8FM3HOQUAQ -> ZEVTDV3I7C3J
+	-420797041 [label="  Hash: -420797041;
+  Author: aaa;
+  Comment: generic comment;
+  Proof: 10;
+  Date: 1518916834.507197;
+  Prev_block: 1;" shape=rectangle]
+	-745639968 [label="  Hash: -745639968;
+  Author: aaa;
+  Comment: srfgdrg;
+  Proof: 10;
+  Date: 1518916838.299402;
+  Prev_block: 11ccd810346cecee1689841b9e71d35749ee03ccf211578bbd0779a7f5f74687;" shape=rectangle]
+	-420797041 -> -745639968
+	1239708328 [label="  Hash: 1239708328;
+  Author: aaa;
+  Comment: thfthft;
+  Proof: 11;
+  Date: 1518916842.5940597;
+  Prev_block: 13d930aa4045c0ae20a222a29825a9848306cfc3808dfbba9e6b70e3192e94dd;" shape=rectangle]
+	-745639968 -> 1239708328
 }

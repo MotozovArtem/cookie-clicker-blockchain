@@ -3,17 +3,19 @@ import json
 import socket
 import logging
 import threading
-
+import traceback
 class Server:
     sock = None
     client_dict = {}
 
     def __init__(self):
+        logging.basicConfig(level=logging.DEBUG)
         self.blockchain = Blockchain("Genesis")
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # self.server_address = socket.gethostbyname(socket.gethostname())
         self.server_address = "127.0.0.1"
-        self.sock.bind((self.server_address, 7000))
+        self.server_port = 7000
+        self.sock.bind((self.server_address, self.server_port))
         thread = threading.Thread(target=self.receive_message)
         thread.start()
 
@@ -25,11 +27,12 @@ class Server:
                 data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
                 logging.info( str(data.decode()))
                 logging.info( str(addr))
-                self.server_address, self.server_port = addr[0], addr[1]
+                self.client_address, self.client_port = addr[0], addr[1]
                 self.client_dict[addr[0]] = addr[1]
-                self.define_type_message(data.decode())
+                self.define_type_message(data.decode(), self.client_address, self.client_port)
             except Exception as e:
-                logging.log(str(e))
+                logging.error(str(e))
+                print(traceback.format_exc())
 
     def send_block(self, block, client_ip,client_port):
         for ip in self.client_dict.keys():
@@ -38,7 +41,8 @@ class Server:
 
 
     def send_blockchain(self, client_ip,client_port):
-        self.sock.sendto(self.blockchain.chain.encode(), (client_ip, client_port))
+        json_encoder = json.JSONEncoder()
+        self.sock.sendto(json_encoder.encode(self.blockchain.chain).encode(), (client_ip, client_port))
 
 
 

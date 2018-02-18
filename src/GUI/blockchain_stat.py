@@ -11,6 +11,7 @@ from PyQt5.QtGui import *
 import os
 import sys
 import sys
+import pprint
 """
 (Для Windows)Прежде чем запускать этот код вы должны установить библиотеку graphviz
 через pip + graphviz-2.38.msi на сайте https://graphviz.gitlab.io/_pages/Download/Download_windows.html
@@ -20,14 +21,18 @@ import sys
 """
 
 os.environ["PATH"] += os.pathsep + "C:\\Program Files (x86)\\Graphviz2.38\\bin\\"  #Волшебная строка после которая сама прописывает вам путь
-
+import traceback
 class Ui_Form(QtWidgets.QWidget):
 
     def __init__(self, parent, blockchain):
         QtWidgets.QWidget.__init__(self)
-        self.parent = parent
-        self.setupUi(self)
-        self.set_blockchain_graph(blockchain)
+        try:
+            self.parent = parent
+            self.setupUi(self)
+            self.set_blockchain_graph(blockchain)
+        except Exception:
+            print(traceback.format_exc())
+
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -79,30 +84,36 @@ class Ui_Form(QtWidgets.QWidget):
         Form.setWindowTitle(_translate("Form", "Form"))
 
     def get_block_desc(self, block): #так я вижу структура каждого блока (если вы нет - то измените её здесь или уведомьте меня)
+        print("RENENENE")
+        pprint.pprint(block)
         text = ("  Hash: {0};\n"
                 "  Author: {1};\n"
                 "  Comment: {2};\n"
                 "  Proof: {3};\n"
                 "  Date: {4};\n"
-                "  Prev_block: {5};").format(block["hash"], block["author"],block["comment"],block["proof"],block["timestamp"],block["previous_hash"],)
-        return text
+                "  Prev_block: {5};").format(str(block["hash"]), str(block["author"]),str(block["comment"]),str(block["proof"]),str(block["timestamp"]),str(block["previous_hash"]),)
+        print(text)
+        print(type(text))
+        return str(text)
 
     def set_blockchain_graph(self,blockchain):
-
+        pprint.pprint(blockchain)
         if len(blockchain) !=0:
-
+            import string
             dot = Digraph(comment='Blockchain', format="jpg")
             dot.attr(rankdir='LR',size='1200, 800' )
-
-            dot.node(blockchain[0]["hash"],
-                     label=self.get_block_desc(blockchain[0]),
+            pprint.pprint(blockchain[0])
+            stri = self.get_block_desc(blockchain[0])
+            print(type(stri))
+            dot.node(str(blockchain[0]["hash"]),
+                     label=stri,
                      shape='rectangle')
 
             for i in range(1,len(blockchain)):
-                dot.node(blockchain[i]["hash"],
+                dot.node(str(blockchain[i]["hash"]),
                          label=self.get_block_desc(blockchain[i]),
                          shape='rectangle')
-                dot.edge(blockchain[i-1]["hash"],blockchain[i]["hash"])
+                dot.edge(str(blockchain[i-1]["hash"]),str(blockchain[i]["hash"]))
 
             dot.render('materials/graph/output')
             scene = QtWidgets.QGraphicsScene()

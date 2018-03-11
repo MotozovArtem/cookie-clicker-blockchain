@@ -20,12 +20,13 @@ from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import UserDialog
 from multiprocessing import Process
 import traceback
+
+
 class Start_Menu(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None, *args, **kwargs):
         super(QtWidgets.QMainWindow, self).__init__(parent=parent)
         self.setupUi(self)
-
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -152,7 +153,7 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.close()
 
 
-if __name__ == "__main__":
+def gui_main():
     app = QtWidgets.QApplication(sys.argv)
     try:
         window = Start_Menu()
@@ -160,4 +161,14 @@ if __name__ == "__main__":
         window.show()
     except Exception as e:
         print(e)
-    sys.exit(app.exec_())
+    app.exec_()
+
+
+if __name__ == "__main__":
+    import network
+
+    p = Process(target=network.main)
+    app_gui = Process(target=gui_main)
+    app_gui.start()
+    p.start()
+    sys.exit(app_gui.exitcode)

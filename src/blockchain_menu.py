@@ -11,9 +11,9 @@ from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import ExceptionDialog, InfoDialog
 from submodules.sys_dialogs import UserDialog
 
-
 from Miner import Miner, SuccessException
 import threading
+
 
 class StartWindow(QtWidgets.QMainWindow):
 
@@ -23,9 +23,6 @@ class StartWindow(QtWidgets.QMainWindow):
         self.setupUi(self)
         self.miner = miner
         self.client = client
-        # self.thread = threading.Thread(target=self.show_warning())
-        # self.thread.daemon = True
-        # self.thread.start()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -193,8 +190,6 @@ class StartWindow(QtWidgets.QMainWindow):
             if self.client.notifi_flag == True:
                 dialog = InfoDialog(self.label, "Warning", "Your opponents have already mined the block!!!")
                 dialog.show()
-
-
 
     def mouse_pressed(self, *args):
         """Здесь фиксируется клик пользователя"""

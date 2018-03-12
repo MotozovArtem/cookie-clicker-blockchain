@@ -40,18 +40,20 @@ class MyProtocol(Protocol):
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
-        for line in data.splitlines():
-            line = line.strip()
-            msgtype = json.loads(line)['msgtype']
-            if self.state == "HELLO" or msgtype == "hello":
-                self.handle_hello(line)
-                self.state = "READY"
-            elif msgtype == "ping":
-                self.handle_ping()
-            elif msgtype == "pong":
-                self.handle_pong()
-            elif msgtype == "getaddr":
-                self.handle_getaddr()
+        print(data)
+        self.transport.write(b"HAI")
+        # for line in data.splitlines():
+        #     line = line.strip()
+        #     msgtype = json.loads(line)['msgtype']
+        #     if self.state == "HELLO" or msgtype == "hello":
+        #         self.handle_hello(line)
+        #         self.state = "READY"
+        #     elif msgtype == "ping":
+        #         self.handle_ping()
+        #     elif msgtype == "pong":
+        #         self.handle_pong()
+        #     elif msgtype == "getaddr":
+        #         self.handle_getaddr()
 
     ###The methods for ping and pong remain unchanged and are omitted
     ###for brevity
@@ -70,6 +72,9 @@ class MyProtocol(Protocol):
     def send_hello(self):
         hello = json.puts({'nodeid': self.nodeid, 'msgtype': 'hello'})
         self.transport.write(hello + "\n")
+
+    # def send_block(self, node_id,   ):
+    #     block = json.puts({"node_id": })
 
     def send_ping(self):
         ping = json.puts({'msgtype': 'ping'})
@@ -154,7 +159,8 @@ def main():
 
 
 if __name__ == '__main__':
-    p = Process(target=main)
-    p.start()
-    print("It's ME")
-    p.join()
+    main()
+    # p = Process(target=main)
+    # p.start()
+    # print("It's ME")
+    # p.join()

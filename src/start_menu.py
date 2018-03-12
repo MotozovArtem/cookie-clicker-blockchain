@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 import sys
 from uuid import uuid4
 
@@ -20,6 +19,7 @@ from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import UserDialog
 from multiprocessing import Process
 import traceback
+import network
 
 
 class Start_Menu(QtWidgets.QMainWindow):
@@ -132,16 +132,16 @@ class Start_Menu(QtWidgets.QMainWindow):
             self.blockchain = Blockchain(self.author)
 
             self.client = Client(self.blockchain)
-            print("OOP000")
+            # print("OOP000")
             self.miner = Miner(self.blockchain, self.client)
             # self.process = Process(target=self.client.main_run)
             # self.process.daemon = True
             # self.process.start()
             # self.process.join()
             # process.join() ??
-            print("OOP")
+            # print("OOP")
             window = StartWindow(self, self.miner, self.client)
-            print("1")
+            # print("1")
             setMoveWindow(window)
             self.hide()
             window.show()
@@ -151,7 +151,6 @@ class Start_Menu(QtWidgets.QMainWindow):
 
     def closeIt(self):
         self.close()
-
 
 def gui_main():
     app = QtWidgets.QApplication(sys.argv)
@@ -165,10 +164,8 @@ def gui_main():
 
 
 if __name__ == "__main__":
-    import network
-
-    p = Process(target=network.main)
+    network_process = Process(target=network.main)
     app_gui = Process(target=gui_main)
     app_gui.start()
-    p.start()
+    network_process.start()
     sys.exit(app_gui.exitcode)

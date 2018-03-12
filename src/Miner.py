@@ -3,7 +3,6 @@ from Client import *
 
 class Miner:
     def __init__(self, blockchain, client):
-
         self.client = client
         self.blockchain = blockchain
         self.count = 0

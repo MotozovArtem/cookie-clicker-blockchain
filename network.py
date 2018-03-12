@@ -40,7 +40,16 @@ class MyProtocol(Protocol):
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
+        """
+        :param data: нужно создать какой-то спец сигнал,
+        который входит в data, чтобы определить, как действовать дальше
+        *кто-то новый пришел и отправить весь blockchain
+        *создан новый block и его нужно отправить
+        *создан новый block и остальных нужно остановить на некоторое время
+        :return:
+        """
         print(data)
+        print(type(data))
         self.transport.write(b"HAI")
         # for line in data.splitlines():
         #     line = line.strip()
@@ -73,8 +82,12 @@ class MyProtocol(Protocol):
         hello = json.puts({'nodeid': self.nodeid, 'msgtype': 'hello'})
         self.transport.write(hello + "\n")
 
-    # def send_block(self, node_id,   ):
-    #     block = json.puts({"node_id": })
+    def send_block(self, block):
+        """send_block
+        block - это data, которую нам придет от GUIшки (блок по сути),
+        а отправлять мы его будем через socket сюда, а потом рассылать другим пирам"""
+        block = json.puts(block)
+        self.transport.write(block)
 
     def send_ping(self):
         ping = json.puts({'msgtype': 'ping'})

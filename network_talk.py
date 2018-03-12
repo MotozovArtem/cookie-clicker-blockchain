@@ -15,7 +15,7 @@ def main():
     point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     point.connect((host_addr, port))
     point.send(b"Hello")
-    point.recv(1024)
+    # point.recv(1024)
     point.close()
 
 

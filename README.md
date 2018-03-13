@@ -1,8 +1,9 @@
 # cookie-clicker-blockchain
+Coockie clicker in Block Chain architecture
 
-Оригинальный исходный код: http://www.pvsm.ru/python/264955
-
-Required libraries:\
-requests v2.18.4\
-Flask V0.12.2\
-twisted 17.9.0
+### Required libraries:
+* requests 2.18.4
+* Flask v0.12.2
+* twisted 17.9.0
+* PyQt 5
+* netifaces 0.10.6

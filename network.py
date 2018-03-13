@@ -22,7 +22,7 @@ class MyProtocol(Protocol):
         self.state = "HELLO"
         self.remote_nodeid = None
         self.nodeid = self.factory.nodeid
-        self.lc_hello = LoopingCall(self.send_hello,)
+        self.lc_hello = LoopingCall(self.send_hello)
         self.peertype = peertype
         self.lastping = None
 
@@ -53,11 +53,13 @@ class MyProtocol(Protocol):
         # print(data)
         # print(type(data))
         message = json.JSONDecoder().decode(data.decode())
-        # print(message)
+        print(message)
         if (message['type'] == 'hi'):
             self.handle_hello(message)
-        elif(message['type']=="block"):
+        elif (message['type'] == "block"):
             self.handle_block(message['block'])
+        elif (message['type'] == ''):
+            pass
         # self.transport.write(b"HAI")
 
     def send_addr(self, mine=False):
@@ -69,14 +71,18 @@ class MyProtocol(Protocol):
                      for peer in self.factory.peers
                      if peer.peertype == 1 and peer.lastping > now - 240]
         addr = json.JSONEncoder().encode({'type': 'addr', 'peers': peers})
-        self.transport.write(peers + "\n")
+        self.transport.write("{0}\n".format(peers).encode())
 
     def send_hello(self):
+        """Когда новый пир, он должен проверить, он первый или нет
+        Если да, то генерить блок
+        Иначе он должен принимать blockchain"""
         hello = json.JSONEncoder().encode({"type": "hi", "ip": self.host}).encode()
         self.transport.write(hello)
 
     def handle_hello(self, data):
-        self.factory.peers.append(data['ip'])
+        if data['ip'] not in self.factory.peers:
+            self.factory.peers.append(data['ip'])
 
     def send_block(self, block):
         """send_block
@@ -87,7 +93,9 @@ class MyProtocol(Protocol):
 
     def handle_block(self, block):
         # print(block)
+        """Тута надо сделать передачу блока в GUI"""
         pass
+
 
 class MyFactory(Factory):
     def __init__(self, peers):
@@ -99,10 +107,6 @@ class MyFactory(Factory):
 
     def buildProtocol(self, addr):
         return MyProtocol(self, 1)
-
-
-def gotProtocol(p):
-    p.send_hello()
 
 
 def discover_hosts(mask):

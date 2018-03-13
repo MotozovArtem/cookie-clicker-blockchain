@@ -32,7 +32,7 @@ class Client:
 
     def send_block(self, block):
         point = None
-        for peer_addr, _ in self.sibling_peers:
+        for peer_addr in self.sibling_peers:
             if peer_addr != self.client_address:
                 try:
                     point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -66,7 +66,7 @@ class Client:
         netifaces.interfaces()
         port_scanner = nmap.PortScanner()
         port_scanner.scan(hosts='{0}/{1}'.format(self.get_netID(), self.get_netmask_CIDR()), arguments='-n -sP')
-        self.sibling_peers = [(x, port_scanner[x]['status']['state']) for x in port_scanner.all_hosts()]
+        self.sibling_peers = port_scanner.all_hosts()
         return self.sibling_peers
 
     def get_netID(self):

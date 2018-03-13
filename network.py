@@ -22,7 +22,7 @@ class MyProtocol(Protocol):
         self.state = "HELLO"
         self.remote_nodeid = None
         self.nodeid = self.factory.nodeid
-        self.lc_ping = LoopingCall(self.send_ping)
+        # self.lc_ping = LoopingCall(self.send_ping)
         self.peertype = peertype
         self.lastping = None
 
@@ -89,15 +89,15 @@ class MyProtocol(Protocol):
         block = json.puts(block)
         self.transport.write(block)
 
-    def send_ping(self):
-        ping = json.puts({'msgtype': 'ping'})
-        print(
-            "Pinging", self.remote_nodeid)
-        self.transport.write(ping + "\n")
-
-    def send_pong(self):
-        pong = json.puts({'msgtype': 'pong'})
-        self.transport.write(pong + "\n")
+    # def send_ping(self):
+    #     ping = json.puts({'msgtype': 'ping'})
+    #     print(
+    #         "Pinging", self.remote_nodeid)
+    #     self.transport.write(ping + "\n")
+    #
+    # def send_pong(self):
+    #     pong = json.puts({'msgtype': 'pong'})
+    #     self.transport.write(pong + "\n")
 
     def handle_addr(self, addr):
         json = json.loads(addr)
@@ -146,9 +146,6 @@ def discover_hosts(mask):
     port_scanner = nmap.PortScanner()
     port_scanner.scan(hosts='192.168.1.0/24', arguments='-n -sP')
     return [(x, port_scanner[x]['status']['state']) for x in port_scanner.all_hosts()]
-
-
-from multiprocessing import Process
 
 
 def main():

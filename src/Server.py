@@ -44,9 +44,6 @@ class Server:
         self.sock.sendto(json_encoder.encode(self.blockchain.chain).encode(), (client_ip, client_port))
 
 
-
-
-
     def send_notifi(self,client_ip,client_port):
         for ip in self.client_dict.keys():
             if ip != client_ip:

@@ -1,31 +1,10 @@
 // Blockchain
 digraph {
 	rankdir=LR size="1200, 800"
-	-1884368113 [label="  Hash: -1884368113;
-  Author: sef;
+	-9031245212392343415 [label="  Hash: -9031245212392343415;
+  Author: Artyom;
   Comment: generic comment;
   Proof: 10;
-  Date: 1518939776.24157;
+  Date: 1520965787.9544716;
   Prev_block: 1;" shape=rectangle]
-	1833235995 [label="  Hash: 1833235995;
-  Author: sef;
-  Comment: sefg;
-  Proof: 10;
-  Date: 1518939781.6648731;
-  Prev_block: b0e3f1bc8ec1ad9fce4ef3e4094b594f6cf3a21f64669b52cef567c2ae6dac8f;" shape=rectangle]
-	-1884368113 -> 1833235995
-	485840339 [label="  Hash: 485840339;
-  Author: sef;
-  Comment: Default comment;
-  Proof: 11;
-  Date: 1518939784.8329077;
-  Prev_block: 5fc9f285c0eb1fa4ffe3058584e5d121f7c8cb289904fa1b04f5707a9e89c533;" shape=rectangle]
-	1833235995 -> 485840339
-	-778761578 [label="  Hash: -778761578;
-  Author: sef;
-  Comment: drgdrg;
-  Proof: 12;
-  Date: 1518939789.9411922;
-  Prev_block: 66133465411447188b02c523f3760a2d5848b1d0337dfe8c9befbd97107f7c14;" shape=rectangle]
-	485840339 -> -778761578
 }

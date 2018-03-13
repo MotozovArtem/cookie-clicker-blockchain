@@ -16,7 +16,15 @@ import pprint
 через pip + graphviz-2.38.msi на сайте https://graphviz.gitlab.io/_pages/Download/Download_windows.html
 и прописать путь к папке bin.
 
-(Для Linux)Нуу либо тоже самое либо выплывайте сами...
+(Для Linux) (For Linux)
+Fedora 22 and later
+$ sudo dnf install graphviz
+
+Ubuntu/Debian
+$ sudo apt install graphviz
+
+Arch Linux
+$ sudo pacman -S graphviz
 """
 
 os.environ[
@@ -84,10 +92,8 @@ class Ui_Form(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
 
-    def get_block_desc(self,
-                       block):  # так я вижу структура каждого блока (если вы нет - то измените её здесь или уведомьте меня)
-        print("RENENENE")
-        pprint.pprint(block)
+    def get_block_desc(self, block):
+        # так я вижу структура каждого блока (если вы нет - то измените её здесь или уведомьте меня)
         text = ("  Hash: {0};\n"
                 "  Author: {1};\n"
                 "  Comment: {2};\n"
@@ -96,19 +102,16 @@ class Ui_Form(QtWidgets.QWidget):
                 "  Prev_block: {5};").format(str(block["hash"]), str(block["author"]), str(block["comment"]),
                                              str(block["proof"]), str(block["timestamp"]),
                                              str(block["previous_hash"]), )
-        print(text)
-        print(type(text))
         return str(text)
 
     def set_blockchain_graph(self, blockchain):
-        pprint.pprint(blockchain)
+        # pprint.pprint(blockchain)
         if len(blockchain) != 0:
-            import string
             dot = Digraph(comment='Blockchain', format="jpg")
             dot.attr(rankdir='LR', size='1200, 800')
-            pprint.pprint(blockchain[0])
+            # pprint.pprint(blockchain[0])
             stri = self.get_block_desc(blockchain[0])
-            print(type(stri))
+            # print(type(stri))
             dot.node(str(blockchain[0]["hash"]),
                      label=stri,
                      shape='rectangle')

@@ -32,7 +32,7 @@ class MyProtocol(Protocol):
         self.remote_host = "{0}:{1}".format(remote_host.host, remote_host.port)
         self.host = "{0}:{1}".format(host.host, host.port)
         # self.host_ip = host.host          ???
-        self.lc_hello.start(1)
+        # self.lc_hello.start(1)
         print("Connection from", self.transport.getPeer())
 
     def connectionLost(self, reason=None):
@@ -53,9 +53,11 @@ class MyProtocol(Protocol):
         # print(data)
         # print(type(data))
         message = json.JSONDecoder().decode(data.decode())
-        print(message)
+        # print(message)
         if (message['type'] == 'hi'):
             self.handle_hello(message)
+        elif(message['type']=="block"):
+            self.handle_block(message['block'])
         # self.transport.write(b"HAI")
 
     def send_addr(self, mine=False):
@@ -70,7 +72,6 @@ class MyProtocol(Protocol):
         self.transport.write(peers + "\n")
 
     def send_hello(self):
-        # print("hello")
         hello = json.JSONEncoder().encode({"type": "hi", "ip": self.host}).encode()
         self.transport.write(hello)
 
@@ -81,16 +82,19 @@ class MyProtocol(Protocol):
         """send_block
         block - это data, которую нам придет от GUIшки (блок по сути),
         а отправлять мы его будем через socket сюда, а потом рассылать другим пирам"""
-        block = json.JSONEncoder().encode(block)
+        block = json.JSONEncoder().encode(block).encode()
         self.transport.write(block)
 
-
-class MyFactory(Factory):
-    def __init__(self):
+    def handle_block(self, block):
+        # print(block)
         pass
 
+class MyFactory(Factory):
+    def __init__(self, peers):
+        self.peers = peers
+
     def startFactory(self):
-        self.peers = []
+        # self.peers = []
         self.nodeid = generate_nodeid()
 
     def buildProtocol(self, addr):
@@ -104,7 +108,7 @@ def gotProtocol(p):
 def discover_hosts(mask):
     port_scanner = nmap.PortScanner()
     port_scanner.scan(hosts='192.168.1.0/24', arguments='-n -sP')
-    return [(x, port_scanner[x]['status']['state']) for x in port_scanner.all_hosts()]
+    return port_scanner.all_hosts()
 
 
 def main():
@@ -117,10 +121,10 @@ def main():
         host_addr = addr[netifaces.AF_INET][0]["addr"]
     port = 5500
     endpoint = TCP4ServerEndpoint(reactor, port)
-    factory = MyFactory()
-    endpoint.listen(factory)
     hosts_list = discover_hosts(None)
-    for host, status in hosts_list:
+    factory = MyFactory(hosts_list)
+    endpoint.listen(factory)
+    for host in hosts_list:
         if host != host_addr:
             point = TCP4ClientEndpoint(reactor, host, int(port))
             point.connect(factory)

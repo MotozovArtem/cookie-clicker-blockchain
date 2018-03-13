@@ -31,15 +31,18 @@ class Client:
         #         logging.info(str(e))
 
     def send_block(self, block):
-        point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        point = None
         for peer_addr, _ in self.sibling_peers:
             if peer_addr != self.client_address:
                 try:
+                    point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     point.connect((peer_addr, self.port))
-                    point.send(json.JSONEncoder().encode(block).encode())
-                    point.detach()
+                    point.send(json.JSONEncoder().encode({"type": "block", "block": block}).encode())
+                    point.close()
                 except ConnectionRefusedError:
                     print("Not our peer")
+                except OSError:
+                    point.close()
                     # point.close()
         # if not self.server_address is None:
         #     self.sock.sendto(block.encode(), (self.server_address, self.server_port))

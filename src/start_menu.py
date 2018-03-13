@@ -132,25 +132,17 @@ class Start_Menu(QtWidgets.QMainWindow):
             self.blockchain = Blockchain(self.author)
 
             self.client = Client(self.blockchain)
-            # print("OOP000")
             self.miner = Miner(self.blockchain, self.client)
-            # self.process = Process(target=self.client.main_run)
-            # self.process.daemon = True
-            # self.process.start()
-            # self.process.join()
-            # process.join() ??
-            # print("OOP")
             window = StartWindow(self, self.miner, self.client)
-            # print("1")
             setMoveWindow(window)
             self.hide()
             window.show()
-            # asyncore.loop(600)
         except Exception:
             print(traceback.format_exc())
 
     def closeIt(self):
         self.close()
+
 
 def gui_main():
     app = QtWidgets.QApplication(sys.argv)
@@ -164,8 +156,13 @@ def gui_main():
 
 
 if __name__ == "__main__":
+    app_gui = None
     network_process = Process(target=network.main)
     app_gui = Process(target=gui_main)
     app_gui.start()
     network_process.start()
-    sys.exit(app_gui.exitcode)
+    while(app_gui.is_alive()):
+        pass
+    network_process.terminate()
+
+

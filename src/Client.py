@@ -1,15 +1,10 @@
-import socket
-import logging
 import json
-import traceback
-from multiprocessing import Process
 import netifaces
 import socket
 import nmap.nmap as nmap
 
 
 class Client:
-    # port = 6999
     server_address = None
     server_port = None
     notifi_flag = False
@@ -20,6 +15,7 @@ class Client:
                                   socket.SOCK_STREAM)  # TCP
         self.client_interfaces = netifaces.interfaces()
         self.client_net_info = self.get_net_info()
+        self.port = 5500
         self.client_address = self.client_net_info[netifaces.AF_INET][0]['addr']
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
@@ -34,9 +30,8 @@ class Client:
         #         logging.info(str(e))
 
     def send_block(self, block):
-        port = 5994
         point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        point.connect((self.client_address, port))
+        point.connect((self.client_address, self.port))
         point.send(json.JSONEncoder().encode(block).encode())
         point.close()
         # if not self.server_address is None:

@@ -22,7 +22,6 @@ class MyProtocol(Protocol):
         self.state = "HELLO"
         self.remote_nodeid = None
         self.nodeid = self.factory.nodeid
-        # self.lc_ping = LoopingCall(self.send_ping)
         self.peertype = peertype
         self.lastping = None
 
@@ -51,21 +50,6 @@ class MyProtocol(Protocol):
         print(data)
         print(type(data))
         self.transport.write(b"HAI")
-        # for line in data.splitlines():
-        #     line = line.strip()
-        #     msgtype = json.loads(line)['msgtype']
-        #     if self.state == "HELLO" or msgtype == "hello":
-        #         self.handle_hello(line)
-        #         self.state = "READY"
-        #     elif msgtype == "ping":
-        #         self.handle_ping()
-        #     elif msgtype == "pong":
-        #         self.handle_pong()
-        #     elif msgtype == "getaddr":
-        #         self.handle_getaddr()
-
-    ###The methods for ping and pong remain unchanged and are omitted
-    ###for brevity
 
     def send_addr(self, mine=False):
         now = time()
@@ -88,42 +72,6 @@ class MyProtocol(Protocol):
         а отправлять мы его будем через socket сюда, а потом рассылать другим пирам"""
         block = json.puts(block)
         self.transport.write(block)
-
-    # def send_ping(self):
-    #     ping = json.puts({'msgtype': 'ping'})
-    #     print(
-    #         "Pinging", self.remote_nodeid)
-    #     self.transport.write(ping + "\n")
-    #
-    # def send_pong(self):
-    #     pong = json.puts({'msgtype': 'pong'})
-    #     self.transport.write(pong + "\n")
-
-    def handle_addr(self, addr):
-        json = json.loads(addr)
-        for remote_ip, remote_nodeid in json["peers"]:
-            if remote_nodeid not in self.factory.peers:
-                host, port = remote_ip.split(":")
-                point = TCP4ClientEndpoint(reactor, host, int(port))
-                d = connectProtocol(point, MyProtocol(2))
-                d.addCallback(gotProtocol)
-
-    def handle_getaddr(self, getaddr):
-        self.send_addr()
-
-    def handle_hello(self, hello):
-        hello = json.loads(hello)
-        self.remote_nodeid = hello["nodeid"]
-        if self.remote_nodeid == self.nodeid:
-            print("Connected to myself.")
-            self.transport.loseConnection()
-        else:
-            self.factory.peers[self.remote_nodeid] = self
-            self.lc_ping.start(60)
-            ###inform our new peer about us
-            self.send_addr(mine=True)
-            ###and ask them for more peers
-            self.send_getaddr()
 
 
 class MyFactory(Factory):
@@ -156,7 +104,7 @@ def main():
     except:
         addr = netifaces.ifaddresses(interfaces[1])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
-    port = 5994
+    port = 5500
     endpoint = TCP4ServerEndpoint(reactor, port)
     factory = MyFactory()
     endpoint.listen(factory)

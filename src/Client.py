@@ -17,6 +17,7 @@ class Client:
         self.client_net_info = self.get_net_info()
         self.port = 5500
         self.client_address = self.client_net_info[netifaces.AF_INET][0]['addr']
+        self.discover_peers()
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
         pass
@@ -31,9 +32,15 @@ class Client:
 
     def send_block(self, block):
         point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        point.connect((self.client_address, self.port))
-        point.send(json.JSONEncoder().encode(block).encode())
-        point.close()
+        for peer_addr, _ in self.sibling_peers:
+            if peer_addr != self.client_address:
+                try:
+                    point.connect((peer_addr, self.port))
+                    point.send(json.JSONEncoder().encode(block).encode())
+                    point.detach()
+                except ConnectionRefusedError:
+                    print("Not our peer")
+                    # point.close()
         # if not self.server_address is None:
         #     self.sock.sendto(block.encode(), (self.server_address, self.server_port))
 
@@ -56,7 +63,8 @@ class Client:
         netifaces.interfaces()
         port_scanner = nmap.PortScanner()
         port_scanner.scan(hosts='{0}/{1}'.format(self.get_netID(), self.get_netmask_CIDR()), arguments='-n -sP')
-        return [(x, port_scanner[x]['status']['state']) for x in port_scanner.all_hosts()]
+        self.sibling_peers = [(x, port_scanner[x]['status']['state']) for x in port_scanner.all_hosts()]
+        return self.sibling_peers
 
     def get_netID(self):
         return ".".join([str(ad & mask) for ad, mask in zip(

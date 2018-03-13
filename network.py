@@ -22,20 +22,23 @@ class MyProtocol(Protocol):
         self.state = "HELLO"
         self.remote_nodeid = None
         self.nodeid = self.factory.nodeid
+        self.lc_hello = LoopingCall(self.send_hello,)
         self.peertype = peertype
         self.lastping = None
 
     def connectionMade(self):
-        remote_ip = self.transport.getPeer()
-        host_ip = self.transport.getHost()
-        self.remote_ip = remote_ip.host + ":" + str(remote_ip.port)
-        self.host_ip = host_ip.host + ":" + str(host_ip.port)
+        remote_host = self.transport.getPeer()
+        host = self.transport.getHost()
+        self.remote_host = "{0}:{1}".format(remote_host.host, remote_host.port)
+        self.host = "{0}:{1}".format(host.host, host.port)
+        # self.host_ip = host.host          ???
+        self.lc_hello.start(1)
         print("Connection from", self.transport.getPeer())
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
             self.factory.peers.pop(self.remote_nodeid)
-            self.lc_ping.stop()
+            self.lc_hello.stop()
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
@@ -47,30 +50,38 @@ class MyProtocol(Protocol):
         *создан новый block и остальных нужно остановить на некоторое время
         :return:
         """
-        print(data)
-        print(type(data))
-        self.transport.write(b"HAI")
+        # print(data)
+        # print(type(data))
+        message = json.JSONDecoder().decode(data.decode())
+        print(message)
+        if (message['type'] == 'hi'):
+            self.handle_hello(message)
+        # self.transport.write(b"HAI")
 
     def send_addr(self, mine=False):
         now = time()
         if mine:
-            peers = [self.host_ip]
+            peers = [self.host]
         else:
             peers = [(peer.remote_ip, peer.remote_nodeid)
                      for peer in self.factory.peers
                      if peer.peertype == 1 and peer.lastping > now - 240]
-        addr = json.puts({'msgtype': 'addr', 'peers': peers})
+        addr = json.JSONEncoder().encode({'type': 'addr', 'peers': peers})
         self.transport.write(peers + "\n")
 
     def send_hello(self):
-        hello = json.puts({'nodeid': self.nodeid, 'msgtype': 'hello'})
-        self.transport.write(hello + "\n")
+        # print("hello")
+        hello = json.JSONEncoder().encode({"type": "hi", "ip": self.host}).encode()
+        self.transport.write(hello)
+
+    def handle_hello(self, data):
+        self.factory.peers.append(data['ip'])
 
     def send_block(self, block):
         """send_block
         block - это data, которую нам придет от GUIшки (блок по сути),
         а отправлять мы его будем через socket сюда, а потом рассылать другим пирам"""
-        block = json.puts(block)
+        block = json.JSONEncoder().encode(block)
         self.transport.write(block)
 
 
@@ -79,7 +90,7 @@ class MyFactory(Factory):
         pass
 
     def startFactory(self):
-        self.peers = {}
+        self.peers = []
         self.nodeid = generate_nodeid()
 
     def buildProtocol(self, addr):

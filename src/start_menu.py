@@ -130,7 +130,6 @@ class Start_Menu(QtWidgets.QMainWindow):
                     break
             self.author = str(self.user_nickname)  # При перезапуске проги он перегенится. Критично ли это?
             self.blockchain = Blockchain(self.author)
-
             self.client = Client(self.blockchain)
             self.miner = Miner(self.blockchain, self.client)
             window = StartWindow(self, self.miner, self.client)

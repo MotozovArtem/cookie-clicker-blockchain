@@ -163,6 +163,7 @@ if __name__ == "__main__":
     network_process.start()
     while(app_gui.is_alive()):
         pass
+
     network_process.terminate()
 
 

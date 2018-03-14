@@ -19,10 +19,10 @@ from src import network
 
 
 class Start_Menu(QtWidgets.QMainWindow):
-
-    def __init__(self, parent=None, *args, **kwargs):
+    def __init__(self, pipe, parent=None, *args, **kwargs):
         super(QtWidgets.QMainWindow, self).__init__(parent=parent)
         self.setupUi(self)
+        self.pipe = pipe
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -119,14 +119,14 @@ class Start_Menu(QtWidgets.QMainWindow):
             # window = StartWindow(self, self.miner)
             while True:
                 nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
-                if nick == None or nick == "":
+                if nick is None or nick == "":
                     continue
                 else:
                     self.user_nickname = nick
                     break
             self.author = str(self.user_nickname)  # При перезапуске проги он перегенится. Критично ли это?
             self.blockchain = Blockchain(self.author)
-            self.client = Client(self.blockchain)
+            self.client = Client(self.blockchain, self.pipe)
             self.miner = Miner(self.blockchain, self.client)
             window = StartWindow(self, self.miner, self.client)
             setMoveWindow(window)
@@ -139,16 +139,15 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.close()
 
 
-def gui_main():
+def gui_main(pipe):
     app = QtWidgets.QApplication(sys.argv)
     try:
-        window = Start_Menu()
+        window = Start_Menu(pipe)
         setMoveWindow(window)
         window.show()
     except Exception as e:
         print(e)
     app.exec_()
-
 
 # if __name__ == "__main__":
 #     app_gui = None

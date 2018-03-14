@@ -17,7 +17,7 @@ def generate_nodeid():
 
 
 class MyProtocol(Protocol):
-    def __init__(self, factory, peertype):
+    def __init__(self, factory, peertype, pipe):
         self.factory = factory
         self.state = "HELLO"
         self.remote_nodeid = None
@@ -25,6 +25,7 @@ class MyProtocol(Protocol):
         self.lc_hello = LoopingCall(self.send_hello)
         self.peertype = peertype
         self.lastping = None
+        self.pipe = pipe
 
     def connectionMade(self):
         remote_host = self.transport.getPeer()
@@ -54,11 +55,11 @@ class MyProtocol(Protocol):
         # print(type(data))
         message = json.JSONDecoder().decode(data.decode())
         print(message)
-        if (message['type'] == 'hi'):
+        if message['type'] == 'hi':
             self.handle_hello(message)
-        elif (message['type'] == "block"):
-            self.handle_block(message['block'])
-        elif (message['type'] == ''):
+        elif message['type'] == "block":
+            self.handle_block(message['block'], self.pipe)
+        elif message['type'] == '':
             pass
         # self.transport.write(b"HAI")
 
@@ -91,22 +92,28 @@ class MyProtocol(Protocol):
         block = json.JSONEncoder().encode(block).encode()
         self.transport.write(block)
 
+    def send_chain(self, chain):
+        encoded_chain = [json.JSONEncoder().encode(block).encode() for block in chain]
+        self.transport.write(encoded_chain)
+
     def handle_block(self, block):
         # print(block)
         """Тута надо сделать передачу блока в GUI"""
+        self.pipe.send(block)
         pass
 
 
 class MyFactory(Factory):
-    def __init__(self, peers):
+    def __init__(self, peers, pipe):
         self.peers = peers
+        self.pipe = pipe
 
     def startFactory(self):
         # self.peers = []
         self.nodeid = generate_nodeid()
 
     def buildProtocol(self, addr):
-        return MyProtocol(self, 1)
+        return MyProtocol(self, 1, self.pipe)
 
 
 def discover_hosts(mask):
@@ -115,18 +122,18 @@ def discover_hosts(mask):
     return port_scanner.all_hosts()
 
 
-def main():
+def main(pipe):
     interfaces = netifaces.interfaces()
     try:
         addr = netifaces.ifaddresses(interfaces[2])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
-    except:
+    except Exception:
         addr = netifaces.ifaddresses(interfaces[1])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
     port = 5500
     endpoint = TCP4ServerEndpoint(reactor, port)
     hosts_list = discover_hosts(None)
-    factory = MyFactory(hosts_list)
+    factory = MyFactory(hosts_list, pipe)
     endpoint.listen(factory)
     for host in hosts_list:
         if host != host_addr:
@@ -135,8 +142,8 @@ def main():
     reactor.run()
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
     # p = Process(target=main)
     # p.start()
     # print("It's ME")

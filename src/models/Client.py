@@ -9,7 +9,7 @@ class Client:
     server_port = None
     notifi_flag = False
 
-    def __init__(self, blockchain):
+    def __init__(self, blockchain, pipe):
         self.blockchain = blockchain
         self.sock = socket.socket(socket.AF_INET,  # Internet
                                   socket.SOCK_STREAM)  # TCP
@@ -18,17 +18,18 @@ class Client:
         self.port = 5500
         self.client_address = self.client_net_info[netifaces.AF_INET][0]['addr']
         self.discover_peers()
+        self.pipe = pipe
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
-        pass
-        # print("receiving")
-        # while True:
-        #     try:
-        #         data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
-        #         self.server_address, self.server_port = addr[0], addr[1]
-        #         self.define_type_message(data.decode())
-        #     except Exception as e:
-        #         logging.info(str(e))
+        print("receiving")
+        while True:
+            try:
+                data = self.pipe.recv()
+                # data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
+                # self.server_address, self.server_port = addr[0], addr[1]
+                self.define_type_message(data)
+            except Exception as e:
+                print(e.__str__())
 
     def send_block(self, block):
         point = None
@@ -54,7 +55,7 @@ class Client:
     def get_net_info(self):
         try:
             addr = netifaces.ifaddresses(self.client_interfaces[2])
-        except:
+        except Exception:
             addr = netifaces.ifaddresses(self.client_interfaces[1])
         return addr
 
@@ -79,9 +80,9 @@ class Client:
         if mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
-            data = json.JSONDecoder().decode(mes)
-            if type(data) == list:
-                self.blockchain.chain = data
-            elif type(data) == dict:
-                self.blockchain.chain.append(data)
-                self.blockchain.curr_proof = data['proof']
+            # data = json.JSONDecoder().decode(mes)
+            if type(mes) == list:
+                self.blockchain.chain = mes
+            elif type(mes) == dict:
+                self.blockchain.chain.append(mes)
+                self.blockchain.curr_proof = mes['proof']

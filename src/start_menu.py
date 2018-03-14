@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from uuid import uuid4
 
 from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
-from blockchain_menu import StartWindow
-from submodules.windows_settings import setMoveWindow
-from Blockchain import Blockchain
-from Miner import Miner
-from Client import Client
-import asyncore
+from src.models.Blockchain import Blockchain
+from src.models.Miner import Miner
+from src.models.Client import Client
 
-from blockchain_menu import StartWindow
-from submodules.windows_settings import setMoveWindow
-from submodules.sys_dialogs import UserDialog
+from src.blockchain_menu import StartWindow
+from src.submodules.windows_settings import setMoveWindow
+from src.submodules.sys_dialogs import UserDialog
 from multiprocessing import Process
 import traceback
-import network
+from src import network
 
 
 class Start_Menu(QtWidgets.QMainWindow):
@@ -154,15 +150,13 @@ def gui_main():
     app.exec_()
 
 
-if __name__ == "__main__":
-    app_gui = None
-    network_process = Process(target=network.main)
-    app_gui = Process(target=gui_main)
-    app_gui.start()
-    network_process.start()
-    while(app_gui.is_alive()):
-        pass
-
-    network_process.terminate()
-
-
+# if __name__ == "__main__":
+#     app_gui = None
+#     network_process = Process(target=network.main)
+#     app_gui = Process(target=gui_main)
+#     app_gui.start()
+#     network_process.start()
+#     while (app_gui.is_alive()):
+#         pass
+#
+#     network_process.terminate()

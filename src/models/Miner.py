@@ -1,4 +1,4 @@
-from Client import *
+from src.models.Client import *
 
 
 class Miner:

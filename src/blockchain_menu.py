@@ -6,14 +6,12 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 
-from blockchain_stat import Ui_Form
-from submodules.windows_settings import setMoveWindow
-from submodules.sys_dialogs import ExceptionDialog, InfoDialog
-from submodules.sys_dialogs import UserDialog
+from src.blockchain_stat import Ui_Form
+from src.submodules.windows_settings import setMoveWindow
+from src.submodules.sys_dialogs import ExceptionDialog, InfoDialog
+from src.submodules.sys_dialogs import UserDialog
 
-from Miner import Miner, SuccessException
-import threading
-
+from src.models.Miner import Miner, SuccessException
 
 class StartWindow(QtWidgets.QMainWindow):
 

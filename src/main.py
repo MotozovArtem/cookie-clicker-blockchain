@@ -1,3 +1,6 @@
+import sys
+sys.path.append("./")
+
 from src.start_menu import gui_main
 from multiprocessing import Process, Pipe
 import src.network as network

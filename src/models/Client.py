@@ -19,19 +19,22 @@ class Client:
         self.client_address = self.client_net_info[netifaces.AF_INET][0]['addr']
         self.discover_peers()
         self.pipe = pipe
+        self.receive_message()
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
         print("receiving")
         while True:
             try:
                 data = self.pipe.recv()
-                # data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
-                # self.server_address, self.server_port = addr[0], addr[1]
                 self.define_type_message(data)
             except Exception as e:
                 print(e.__str__())
 
+    # def send_block_into_pipe(self, block):
+    #     self.pipe.send(block)
+
     def send_block(self, block):
+        self.pipe.send(block)
         point = None
         for peer_addr in self.sibling_peers:
             if peer_addr != self.client_address:
@@ -80,9 +83,11 @@ class Client:
         if mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
-            # data = json.JSONDecoder().decode(mes)
+            # data = json.loads(mes)
             if type(mes) == list:
                 self.blockchain.chain = mes
             elif type(mes) == dict:
-                self.blockchain.chain.append(mes)
-                self.blockchain.curr_proof = mes['proof']
+                if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
+                    self.blockchain.chain.append(mes)
+                    self.blockchain.curr_proof = mes['proof']
+

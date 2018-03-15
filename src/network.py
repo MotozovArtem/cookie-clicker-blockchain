@@ -34,7 +34,8 @@ class MyProtocol(Protocol):
         self.host = "{0}:{1}".format(host.host, host.port)
         # self.host_ip = host.host          ???
         # self.lc_hello.start(1)
-        print("Connection from", self.transport.getPeer())
+        print("Connection from", self.transport.getPeer(), self.factory.peers)
+        self.send_hello()
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
@@ -58,7 +59,9 @@ class MyProtocol(Protocol):
         if message['type'] == 'hi':
             self.handle_hello(message)
         elif message['type'] == "block":
-            self.handle_block(message['block'], self.pipe)
+            self.handle_block(message['block'])
+        elif message['type'] == "chain":
+            self.handle_chain(message)
         elif message['type'] == '':
             pass
         # self.transport.write(b"HAI")
@@ -78,23 +81,28 @@ class MyProtocol(Protocol):
         """Когда новый пир, он должен проверить, он первый или нет
         Если да, то генерить блок
         Иначе он должен принимать blockchain"""
-        hello = json.JSONEncoder().encode({"type": "hi", "ip": self.host}).encode()
+        hello = json.dumps({"type": "hi", "ip": self.host})
         self.transport.write(hello)
 
     def handle_hello(self, data):
-        if data['ip'] not in self.factory.peers:
+        # self.send_chain(self.)
+        if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
+
+        temp = self.pipe.recv()  # recv ждет, пока в него прилетит что-нибудь из pipe, но я хз как иначе организовать
+        if type(temp) == dict:  # получение нового блока из Client
+            block = json.dumps({"type": "block", "block": temp})
+            self.transport.write(block)
 
     def send_block(self, block):
         """send_block
         block - это data, которую нам придет от GUIшки (блок по сути),
         а отправлять мы его будем через socket сюда, а потом рассылать другим пирам"""
-        block = json.JSONEncoder().encode(block).encode()
-        self.transport.write(block)
+        d_block = json.dumps(block)
+        self.transport.write(d_block)
 
-    def send_chain(self, chain):
-        encoded_chain = [json.JSONEncoder().encode(block).encode() for block in chain]
-        self.transport.write(encoded_chain)
+    def handle_chain(self, chain):
+        pass
 
     def handle_block(self, block):
         # print(block)
@@ -146,5 +154,5 @@ def main(pipe):
 #     main()
     # p = Process(target=main)
     # p.start()
-    # print("It's ME")
+    # print("It's a ME, Mario")
     # p.join()

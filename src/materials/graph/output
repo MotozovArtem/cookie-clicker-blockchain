@@ -1,10 +1,17 @@
 // Blockchain
 digraph {
 	rankdir=LR size="1200, 800"
-	-9031245212392343415 [label="  Hash: -9031245212392343415;
-  Author: Artyom;
+	1827353814 [label="  Hash: 1827353814;
+  Author: asda;
   Comment: generic comment;
   Proof: 10;
-  Date: 1520965787.9544716;
+  Date: 1521065578.7259967;
   Prev_block: 1;" shape=rectangle]
+	-961854726 [label="  Hash: -961854726;
+  Author: asda;
+  Comment: asdasd;
+  Proof: 10;
+  Date: 1521065600.638069;
+  Prev_block: 8da6a4902eac9277de7528eb6b9a732d7d9db7da81835c142321edf2e876bef7;" shape=rectangle]
+	1827353814 -> -961854726
 }

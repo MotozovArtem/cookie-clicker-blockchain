@@ -16,19 +16,15 @@ class Client:
         self.client_interfaces = netifaces.interfaces()
         self.client_net_info = self.get_net_info()
         self.port = 5500
-        self.client_address = self.client_net_info[netifaces.AF_INET][0]['addr']
+        self.client_address = self.get_client_addr()
         self.discover_peers()
         self.pipe = pipe
         self.receive_message()
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
         print("receiving")
-        while True:
-            try:
-                data = self.pipe.recv()
-                self.define_type_message(data)
-            except Exception as e:
-                print(e.__str__())
+        th = MyThread(self)
+        th.start()
 
     # def send_block_into_pipe(self, block):
     #     self.pipe.send(block)
@@ -41,7 +37,7 @@ class Client:
                 try:
                     point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     point.connect((peer_addr, self.port))
-                    point.send(json.JSONEncoder().encode({"type": "block", "block": block}).encode())
+                    point.send(json.dumps({"type": "block", "block": block}).encode())
                     point.close()
                 except ConnectionRefusedError:
                     print("Not our peer")
@@ -58,6 +54,7 @@ class Client:
     def get_net_info(self):
         try:
             addr = netifaces.ifaddresses(self.client_interfaces[2])
+            client_addr = addr[netifaces.AF_INET][0]['addr']
         except Exception:
             addr = netifaces.ifaddresses(self.client_interfaces[1])
         return addr
@@ -79,6 +76,9 @@ class Client:
             [int(x) for x in self.client_net_info[netifaces.AF_INET][0]["netmask"].split(".")]
         )])
 
+    def get_client_addr(self):
+        return self.client_net_info[netifaces.AF_INET][0]['addr']
+
     def define_type_message(self, mes):
         if mes.find("Notification") != -1:
             self.notifi_flag = True
@@ -91,3 +91,19 @@ class Client:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
 
+
+import threading
+
+
+class MyThread(threading.Thread):
+    def __init__(self, client):
+        super().__init__()
+        self.client = client
+
+    def run(self):
+        while True:
+            try:
+                data = self.client.pipe.recv()
+                self.client.define_type_message(data)
+            except Exception as e:
+                print(e.__str__())

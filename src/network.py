@@ -32,10 +32,10 @@ class MyProtocol(Protocol):
         host = self.transport.getHost()
         self.remote_host = "{0}:{1}".format(remote_host.host, remote_host.port)
         self.host = "{0}:{1}".format(host.host, host.port)
-        # self.host_ip = host.host          ???
+        # self.host_ip = host.host          ???!
         # self.lc_hello.start(1)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
-        self.send_hello()
+        # self.send_hello()
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
@@ -81,7 +81,7 @@ class MyProtocol(Protocol):
         """Когда новый пир, он должен проверить, он первый или нет
         Если да, то генерить блок
         Иначе он должен принимать blockchain"""
-        hello = json.dumps({"type": "hi", "ip": self.host})
+        hello = json.dumps({"type": "hi", "ip": self.host}).encode()
         self.transport.write(hello)
 
     def handle_hello(self, data):
@@ -91,7 +91,7 @@ class MyProtocol(Protocol):
 
         temp = self.pipe.recv()  # recv ждет, пока в него прилетит что-нибудь из pipe, но я хз как иначе организовать
         if type(temp) == dict:  # получение нового блока из Client
-            block = json.dumps({"type": "block", "block": temp})
+            block = json.dumps({"type": "block", "block": temp}).encode()
             self.transport.write(block)
 
     def send_block(self, block):
@@ -108,7 +108,7 @@ class MyProtocol(Protocol):
         # print(block)
         """Тута надо сделать передачу блока в GUI"""
         self.pipe.send(block)
-        pass
+        # pass
 
 
 class MyFactory(Factory):

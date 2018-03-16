@@ -149,7 +149,6 @@ def main(pipe):
     except KeyError:
         addr = netifaces.ifaddresses(interfaces[1])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
-
     port = 5500
     endpoint = TCP4ServerEndpoint(reactor, port)
     hosts_list = discover_hosts(get_netmask_CIDR(addr), get_netID(addr))

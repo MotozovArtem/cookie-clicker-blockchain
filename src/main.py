@@ -12,7 +12,5 @@ if __name__ == "__main__":
     app_gui = Process(target=gui_main, args=(gui_pipe,))
     app_gui.start()
     network_process.start()
-    while app_gui.is_alive():
-        pass
-
+    app_gui.join()
     network_process.terminate()

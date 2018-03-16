@@ -84,9 +84,9 @@ class Client:
             self.notifi_flag = True
         else:
             # data = json.loads(mes)
-            if type(mes) == list:
+            if mes is list:
                 self.blockchain.chain = mes
-            elif type(mes) == dict:
+            elif mes is dict:
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']

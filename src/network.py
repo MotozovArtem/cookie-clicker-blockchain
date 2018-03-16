@@ -22,7 +22,7 @@ class MyProtocol(Protocol):
         self.state = "HELLO"
         self.remote_nodeid = None
         self.nodeid = self.factory.nodeid
-        self.lc_hello = LoopingCall(self.send_hello)
+        # self.lc_hello = LoopingCall(self.send_hello)
         self.peertype = peertype
         self.lastping = None
         self.pipe = pipe
@@ -32,8 +32,8 @@ class MyProtocol(Protocol):
         host = self.transport.getHost()
         self.remote_host = "{0}:{1}".format(remote_host.host, remote_host.port)
         self.host = "{0}:{1}".format(host.host, host.port)
-        # self.host_ip = host.host          ???!
-        # self.lc_hello.start(1)
+        if host.host not in self.factory.peers: # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
+            self.factory.peers.append(host.host)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
         # self.send_hello()
 
@@ -102,7 +102,7 @@ class MyProtocol(Protocol):
         self.transport.write(d_block)
 
     def handle_chain(self, chain):
-        pass
+        self.pipe.send(chain)
 
     def handle_block(self, block):
         # print(block)
@@ -149,10 +149,9 @@ def main(pipe):
             point.connect(factory)
     reactor.run()
 
-
 # if __name__ == '__main__':
 #     main()
-    # p = Process(target=main)
-    # p.start()
-    # print("It's a ME, Mario")
-    # p.join()
+# p = Process(target=main)
+# p.start()
+# print("It's a ME, Mario")
+# p.join()

@@ -32,7 +32,7 @@ class MyProtocol(Protocol):
         host = self.transport.getHost()
         self.remote_host = "{0}:{1}".format(remote_host.host, remote_host.port)
         self.host = "{0}:{1}".format(host.host, host.port)
-        if host.host not in self.factory.peers: # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
+        if host.host not in self.factory.peers:  # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
             self.factory.peers.append(host.host)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
         # self.send_hello()
@@ -108,7 +108,6 @@ class MyProtocol(Protocol):
         # print(block)
         """Тута надо сделать передачу блока в GUI"""
         self.pipe.send(block)
-        # pass
 
 
 class MyFactory(Factory):
@@ -124,9 +123,21 @@ class MyFactory(Factory):
         return MyProtocol(self, 1, self.pipe)
 
 
-def discover_hosts(mask):
+def get_netmask_CIDR(net_info):
+    host_addr = net_info[netifaces.AF_INET][0]["netmask"]
+    return sum([bin(int(x)).count("1") for x in host_addr.split(".")])
+
+
+def get_netID(net_info):
+    return ".".join([str(ad & mask) for ad, mask in zip(
+        [int(x) for x in net_info[netifaces.AF_INET][0]["addr"].split(".")],
+        [int(x) for x in net_info[netifaces.AF_INET][0]["netmask"].split(".")]
+    )])
+
+
+def discover_hosts(mask, net_id):
     port_scanner = nmap.PortScanner()
-    port_scanner.scan(hosts='192.168.1.0/24', arguments='-n -sP')
+    port_scanner.scan(hosts='{0}/{1}'.format(net_id, mask), arguments='-n -sP')
     return port_scanner.all_hosts()
 
 
@@ -135,12 +146,13 @@ def main(pipe):
     try:
         addr = netifaces.ifaddresses(interfaces[2])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
-    except Exception:
+    except KeyError:
         addr = netifaces.ifaddresses(interfaces[1])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
+
     port = 5500
     endpoint = TCP4ServerEndpoint(reactor, port)
-    hosts_list = discover_hosts(None)
+    hosts_list = discover_hosts(get_netmask_CIDR(addr), get_netID(addr))
     factory = MyFactory(hosts_list, pipe)
     endpoint.listen(factory)
     for host in hosts_list:
@@ -148,10 +160,3 @@ def main(pipe):
             point = TCP4ClientEndpoint(reactor, host, int(port))
             point.connect(factory)
     reactor.run()
-
-# if __name__ == '__main__':
-#     main()
-# p = Process(target=main)
-# p.start()
-# print("It's a ME, Mario")
-# p.join()

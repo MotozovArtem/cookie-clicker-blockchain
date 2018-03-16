@@ -2,6 +2,7 @@ import json
 import netifaces
 import socket
 import nmap.nmap as nmap
+import threading
 
 
 class Client:
@@ -63,13 +64,6 @@ class Client:
         host_addr = self.client_net_info[netifaces.AF_INET][0]["netmask"]
         return sum([bin(int(x)).count("1") for x in host_addr.split(".")])
 
-    def discover_peers(self):
-        netifaces.interfaces()
-        port_scanner = nmap.PortScanner()
-        port_scanner.scan(hosts='{0}/{1}'.format(self.get_netID(), self.get_netmask_CIDR()), arguments='-n -sP')
-        self.sibling_peers = port_scanner.all_hosts()
-        return self.sibling_peers
-
     def get_netID(self):
         return ".".join([str(ad & mask) for ad, mask in zip(
             [int(x) for x in self.client_address.split(".")],
@@ -78,6 +72,13 @@ class Client:
 
     def get_client_addr(self):
         return self.client_net_info[netifaces.AF_INET][0]['addr']
+
+    def discover_peers(self):
+        netifaces.interfaces()
+        port_scanner = nmap.PortScanner()
+        port_scanner.scan(hosts='{0}/{1}'.format(self.get_netID(), self.get_netmask_CIDR()), arguments='-n -sP')
+        self.sibling_peers = port_scanner.all_hosts()
+        return self.sibling_peers
 
     def define_type_message(self, mes):
         if mes.find("Notification") != -1:
@@ -90,9 +91,6 @@ class Client:
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
-
-
-import threading
 
 
 class MyThread(threading.Thread):

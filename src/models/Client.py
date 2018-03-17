@@ -31,7 +31,7 @@ class Client:
     #     self.pipe.send(block)
 
     def send_block(self, block):
-        self.pipe.send(block)
+        # self.pipe.send(block)
         point = None
         for peer_addr in self.sibling_peers:
             if peer_addr != self.client_address:

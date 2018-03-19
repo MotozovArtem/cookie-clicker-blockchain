@@ -23,7 +23,7 @@ class Client:
         self.receive_message()
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
-        print("receiving")
+        # print("receiving")
         th = MyThread(self)
         th.start()
 
@@ -31,7 +31,6 @@ class Client:
     #     self.pipe.send(block)
 
     def send_block(self, block):
-        # self.pipe.send(block)
         point = None
         for peer_addr in self.sibling_peers:
             if peer_addr != self.client_address:
@@ -44,13 +43,24 @@ class Client:
                     print("Not our peer")
                 except OSError:
                     point.close()
-                    # point.close()
-        # if not self.server_address is None:
-        #     self.sock.sendto(block.encode(), (self.server_address, self.server_port))
 
     def send_notifi(self):
         if not self.server_address is None:
             self.sock.sendto("Notification!".encode(), (self.server_address, self.server_port))
+
+    def send_chain(self):
+        point = None
+        for peer_addr in self.sibling_peers:
+            if peer_addr != self.client_address:
+                try:
+                    point = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    point.connect((peer_addr, self.port))
+                    point.send(json.dumps({"type": "chain", "chain": self.blockchain.chain}).encode())
+                    point.close()
+                except ConnectionRefusedError:
+                    print("Not our peer")
+                except OSError:
+                    point.close()
 
     def get_net_info(self):
         try:
@@ -81,13 +91,14 @@ class Client:
         return self.sibling_peers
 
     def define_type_message(self, mes):
-        if mes.find("Notification") != -1:
+        if type(mes) is str and mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
             # data = json.loads(mes)
-            if mes is list:
+            # print("I'm block", type(mes))
+            if type(mes) is list:
                 self.blockchain.chain = mes
-            elif mes is dict:
+            elif type(mes) is dict:
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
@@ -103,5 +114,6 @@ class MyThread(threading.Thread):
             try:
                 data = self.client.pipe.recv()
                 self.client.define_type_message(data)
+                print(len(self.client.blockchain.chain))
             except Exception as e:
                 print(e.__str__())

@@ -35,9 +35,9 @@ class MyProtocol(Protocol):
         if host.host not in self.factory.peers:  # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
             self.factory.peers.append(host.host)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
-        if self.factory.first:
-            self.send_hello()
-            self.factory.first = False
+        # if self.factory.first:
+        #     self.send_hello()
+        #     self.factory.first = False
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
@@ -54,8 +54,6 @@ class MyProtocol(Protocol):
             self.handle_block(message['block'])
         elif message['type'] == "chain":
             self.handle_chain(message['chain'])
-        elif message['type'] == '':
-            pass
 
     def send_addr(self, mine=False):
         now = time()
@@ -68,12 +66,9 @@ class MyProtocol(Protocol):
         addr = json.JSONEncoder().encode({'type': 'addr', 'peers': peers})
         self.transport.write("{0}\n".format(peers).encode())
 
-    def send_hello(self):
-        """Когда новый пир, он должен проверить, он первый или нет
-        Если да, то генерить блок
-        Иначе он должен принимать blockchain"""
-        hello = json.dumps({"type": "hi", "ip": self.host})
-        self.transport.write("{0}\n".format(hello).encode())
+    # def send_hello(self):
+    #     hello = json.dumps({"type": "hi", "ip": self.host})
+    #     self.transport.write("{0}\n".format(hello).encode())
 
     def handle_hello(self, data):
         if data['ip'] not in self.factory.peers:
@@ -87,7 +82,6 @@ class MyProtocol(Protocol):
         self.transport.write(d_block)
 
     def handle_chain(self, chain):
-        print(type(chain))
         self.pipe.send(chain)
 
     def handle_block(self, block):
@@ -98,7 +92,7 @@ class MyFactory(Factory):
     def __init__(self, peers, pipe):
         self.peers = peers
         self.pipe = pipe
-        self.first = True
+        # self.first = True
 
     def startFactory(self):
         self.nodeid = generate_nodeid()

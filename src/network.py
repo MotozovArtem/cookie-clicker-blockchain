@@ -51,7 +51,7 @@ class MyProtocol(Protocol):
         elif message['type'] == "block":
             self.handle_block(message['block'])
         elif message['type'] == "chain":
-            self.handle_chain(message)
+            self.handle_chain(message['chain'])
         # elif message['type'] == "send_chain":
         #     self.send_chain()
         elif message['type'] == '':
@@ -76,12 +76,10 @@ class MyProtocol(Protocol):
         self.transport.write(hello)
 
     def handle_hello(self, data):
-        print("handle_hello")
         if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
         self.pipe.send("get_chain")
-        chain_for_send = self.pipe.recv()
-        print("Chain for send")
+        chain_for_send = json.dumps({"type": "chain", "chain": self.pipe.recv()}).encode()
         self.transport.write(chain_for_send)
 
     def send_block(self, block):

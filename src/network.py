@@ -35,7 +35,9 @@ class MyProtocol(Protocol):
         if host.host not in self.factory.peers:  # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
             self.factory.peers.append(host.host)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
-        self.send_hello()
+        if self.factory.first:
+            self.send_hello()
+            self.factory.first = False
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
@@ -44,7 +46,6 @@ class MyProtocol(Protocol):
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
-        print()
         message = json.JSONDecoder().decode(data.decode())
         print(message)
         if message['type'] == 'hi':
@@ -52,7 +53,6 @@ class MyProtocol(Protocol):
         elif message['type'] == "block":
             self.handle_block(message['block'])
         elif message['type'] == "chain":
-            print("handle_chain")
             self.handle_chain(message['chain'])
         # elif message['type'] == "send_chain":
         #     self.send_chain()
@@ -78,7 +78,6 @@ class MyProtocol(Protocol):
         self.transport.write("{0}\n".format(hello).encode())
 
     def handle_hello(self, data):
-        print(data)
         if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
         self.pipe.send("get_chain")
@@ -101,6 +100,7 @@ class MyFactory(Factory):
     def __init__(self, peers, pipe):
         self.peers = peers
         self.pipe = pipe
+        self.first = True
 
     def startFactory(self):
         self.nodeid = generate_nodeid()

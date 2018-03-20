@@ -89,17 +89,19 @@ class Client:
         if type(mes) is str and mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
+            print("Client.py 93")
             if type(mes) is list:
                 print(mes)
                 self.blockchain.chain = mes
             elif type(mes) is dict:
+                print(self.blockchain.chain[-1]["hash"])
+                print("prev hash = ", mes["previous_hash"])
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
             elif mes == 'get_chain':
                 print("get_chain")
                 self.pipe.send(self.blockchain.chain)
-
 
 
 class MyThread(threading.Thread):
@@ -110,7 +112,9 @@ class MyThread(threading.Thread):
     def run(self):
         while True:
             try:
+                print("Cleint.py 117")
                 data = self.client.pipe.recv()
+                print("Client.py 119")
                 self.client.define_type_message(data)
                 print(len(self.client.blockchain.chain))
             except Exception as e:

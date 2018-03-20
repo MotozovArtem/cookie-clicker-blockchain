@@ -35,7 +35,7 @@ class MyProtocol(Protocol):
         if host.host not in self.factory.peers:  # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
             self.factory.peers.append(host.host)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
-        # self.send_hello()
+        self.send_hello()
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
@@ -51,6 +51,7 @@ class MyProtocol(Protocol):
         elif message['type'] == "block":
             self.handle_block(message['block'])
         elif message['type'] == "chain":
+            print("handle_chain")
             self.handle_chain(message['chain'])
         # elif message['type'] == "send_chain":
         #     self.send_chain()
@@ -72,15 +73,15 @@ class MyProtocol(Protocol):
         """Когда новый пир, он должен проверить, он первый или нет
         Если да, то генерить блок
         Иначе он должен принимать blockchain"""
-        hello = json.dumps({"type": "hi", "ip": self.host}).encode()
-        self.transport.write(hello)
+        hello = json.dumps({"type": "hi", "ip": self.host})
+        self.transport.write("{0}\n".format(hello).encode())
 
     def handle_hello(self, data):
         if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
         self.pipe.send("get_chain")
-        chain_for_send = json.dumps({"type": "chain", "chain": self.pipe.recv()}).encode()
-        self.transport.write(chain_for_send)
+        chain_for_send = json.dumps({"type": "chain", "chain": self.pipe.recv()})
+        self.transport.write("{0}\n".format(chain_for_send).encode())
 
     def send_block(self, block):
         """send_block
@@ -90,6 +91,7 @@ class MyProtocol(Protocol):
         self.transport.write(d_block)
 
     def handle_chain(self, chain):
+        print(type(chain))
         self.pipe.send(chain)
 
     def handle_block(self, block):

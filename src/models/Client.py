@@ -90,6 +90,7 @@ class Client:
             self.notifi_flag = True
         else:
             if type(mes) is list:
+                print(mes)
                 self.blockchain.chain = mes
             elif type(mes) is dict:
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:

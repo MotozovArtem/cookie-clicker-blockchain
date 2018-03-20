@@ -96,6 +96,7 @@ class Client:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
             elif mes == 'get_chain':
+                print("get_chain")
                 self.pipe.send(self.blockchain.chain)
 
 

@@ -44,16 +44,6 @@ class MyProtocol(Protocol):
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
-        """
-        :param data: нужно создать какой-то спец сигнал,
-        который входит в data, чтобы определить, как действовать дальше
-        *кто-то новый пришел и отправить весь blockchain
-        *создан новый block и его нужно отправить
-        *создан новый block и остальных нужно остановить на некоторое время
-        :return:
-        """
-        # print(data)
-        # print(type(data))
         message = json.JSONDecoder().decode(data.decode())
         print(message)
         if message['type'] == 'hi':
@@ -66,7 +56,6 @@ class MyProtocol(Protocol):
         #     self.send_chain()
         elif message['type'] == '':
             pass
-        # self.transport.write(b"HAI")
 
     def send_addr(self, mine=False):
         now = time()
@@ -87,11 +76,12 @@ class MyProtocol(Protocol):
         self.transport.write(hello)
 
     def handle_hello(self, data):
-        # self.send_chain(self.)
+        print("handle_hello")
         if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
         self.pipe.send("get_chain")
         chain_for_send = self.pipe.recv()
+        print("Chain for send")
         self.transport.write(chain_for_send)
 
     def send_block(self, block):

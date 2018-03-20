@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-import sys
 from PyQt5.QtGui import QMovie
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
@@ -12,6 +10,7 @@ from src.submodules.sys_dialogs import ExceptionDialog, InfoDialog
 from src.submodules.sys_dialogs import UserDialog
 
 from src.models.Miner import Miner, SuccessException
+
 
 class StartWindow(QtWidgets.QMainWindow):
 
@@ -175,8 +174,7 @@ class StartWindow(QtWidgets.QMainWindow):
     def ask_for_comment(self):  # User`ve made block and we ask for comment
         self.client.send_notifi()
         comment = UserDialog(self).get_answer("Proved!!!",
-                                              "Congratulations!\nYou mined the block.\n Please enter your comment:")
-        # self.client.handle_write()
+                                              "Congratulations!\nYou mined the block.\nPlease enter your comment:")
         if comment:
             self.miner.update(comment)
         else:

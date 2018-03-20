@@ -148,14 +148,3 @@ def gui_main(pipe):
     except Exception as e:
         print(e)
     app.exec_()
-
-# if __name__ == "__main__":
-#     app_gui = None
-#     network_process = Process(target=network.main)
-#     app_gui = Process(target=gui_main)
-#     app_gui.start()
-#     network_process.start()
-#     while (app_gui.is_alive()):
-#         pass
-#
-#     network_process.terminate()

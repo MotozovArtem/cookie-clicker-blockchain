@@ -12,8 +12,7 @@ class Client:
 
     def __init__(self, blockchain, pipe):
         self.blockchain = blockchain
-        self.sock = socket.socket(socket.AF_INET,  # Internet
-                                  socket.SOCK_STREAM)  # TCP
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_interfaces = netifaces.interfaces()
         self.client_net_info = self.get_net_info()
         self.port = 5500
@@ -23,12 +22,8 @@ class Client:
         self.receive_message()
 
     def receive_message(self):  # Получаем сообщения предупреждения или блоки
-        # print("receiving")
         th = MyThread(self)
         th.start()
-
-    # def send_block_into_pipe(self, block):
-    #     self.pipe.send(block)
 
     def send_block(self, block):
         point = None
@@ -94,14 +89,15 @@ class Client:
         if type(mes) is str and mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
-            # data = json.loads(mes)
-            # print("I'm block", type(mes))
             if type(mes) is list:
                 self.blockchain.chain = mes
             elif type(mes) is dict:
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
+            elif mes == 'get_chain':
+                self.pipe.send(self.blockchain.chain)
+
 
 
 class MyThread(threading.Thread):

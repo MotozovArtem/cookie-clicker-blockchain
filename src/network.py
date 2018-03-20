@@ -62,6 +62,8 @@ class MyProtocol(Protocol):
             self.handle_block(message['block'])
         elif message['type'] == "chain":
             self.handle_chain(message)
+        # elif message['type'] == "send_chain":
+        #     self.send_chain()
         elif message['type'] == '':
             pass
         # self.transport.write(b"HAI")
@@ -88,10 +90,9 @@ class MyProtocol(Protocol):
         # self.send_chain(self.)
         if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
-        temp = self.pipe.recv()  # recv ждет, пока в него прилетит что-нибудь из pipe, но я хз как иначе организовать
-        if type(temp) == dict:  # получение нового блока из Client
-            block = json.dumps({"type": "block", "block": temp}).encode()
-            self.transport.write(block)
+        self.pipe.send("get_chain")
+        chain_for_send = self.pipe.recv()
+        self.transport.write(chain_for_send)
 
     def send_block(self, block):
         """send_block

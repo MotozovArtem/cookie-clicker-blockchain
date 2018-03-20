@@ -20,7 +20,7 @@ class Blockchain:
             'author': self.author,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
         }
-        block['hash'] = self.hash(str(block).encode())
+        block['hash'] = self.hash(str(block))
         self.chain.append(block)
         return block
 

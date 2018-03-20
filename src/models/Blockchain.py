@@ -18,9 +18,9 @@ class Blockchain:
             'proof': proof or self.curr_proof,
             'comment': comment,
             'author': self.author,
-            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+            'previous_hash': previous_hash or self.chain[-1]['hash'],
         }
-        block['hash'] = self.hash(str(block))
+        block['hash'] = self.hash(block)
         self.chain.append(block)
         return block
 

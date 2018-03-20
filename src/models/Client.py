@@ -89,7 +89,6 @@ class Client:
         if type(mes) is str and mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
-            print("Client.py 93")
             if type(mes) is list:
                 print(mes)
                 self.blockchain.chain = mes
@@ -112,9 +111,7 @@ class MyThread(threading.Thread):
     def run(self):
         while True:
             try:
-                print("Cleint.py 117")
                 data = self.client.pipe.recv()
-                print("Client.py 119")
                 self.client.define_type_message(data)
                 print(len(self.client.blockchain.chain))
             except Exception as e:

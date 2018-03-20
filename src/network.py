@@ -46,6 +46,7 @@ class MyProtocol(Protocol):
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
+        print(data)
         message = json.JSONDecoder().decode(data.decode())
         print(message)
         if message['type'] == 'hi':

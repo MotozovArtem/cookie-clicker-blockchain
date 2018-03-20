@@ -44,6 +44,7 @@ class MyProtocol(Protocol):
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
+        print()
         message = json.JSONDecoder().decode(data.decode())
         print(message)
         if message['type'] == 'hi':
@@ -77,6 +78,7 @@ class MyProtocol(Protocol):
         self.transport.write("{0}\n".format(hello).encode())
 
     def handle_hello(self, data):
+        print(data)
         if data['ip'] not in self.factory.peers:  # Если ip не в peers, то добавляем его туда и отправляем... обратно?
             self.factory.peers.append(data['ip'])
         self.pipe.send("get_chain")
@@ -84,9 +86,6 @@ class MyProtocol(Protocol):
         self.transport.write("{0}\n".format(chain_for_send).encode())
 
     def send_block(self, block):
-        """send_block
-        block - это data, которую нам придет от GUIшки (блок по сути),
-        а отправлять мы его будем через socket сюда, а потом рассылать другим пирам"""
         d_block = json.dumps(block)
         self.transport.write(d_block)
 
@@ -95,8 +94,6 @@ class MyProtocol(Protocol):
         self.pipe.send(chain)
 
     def handle_block(self, block):
-        # print(block)
-        """Тута надо сделать передачу блока в GUI"""
         self.pipe.send(block)
 
 
@@ -106,7 +103,6 @@ class MyFactory(Factory):
         self.pipe = pipe
 
     def startFactory(self):
-        # self.peers = []
         self.nodeid = generate_nodeid()
 
     def buildProtocol(self, addr):

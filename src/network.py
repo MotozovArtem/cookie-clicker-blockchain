@@ -32,17 +32,17 @@ class MyProtocol(Protocol):
         host = self.transport.getHost()
         self.remote_host = "{0}:{1}".format(remote_host.host, remote_host.port)
         self.host = "{0}:{1}".format(host.host, host.port)
-        if host.host not in self.factory.peers:  # Если кто-то новый в сети появился после запуска приложения, добавить его в список peer'ов
+        if host.host not in self.factory.peers:
             self.factory.peers.append(host.host)
         print("Connection from", self.transport.getPeer(), self.factory.peers)
-        # if self.factory.first:
-        #     self.send_hello()
-        #     self.factory.first = False
+        if self.factory.first:
+            self.send_hello()
+            self.factory.first = False
 
     def connectionLost(self, reason=None):
         if self.remote_nodeid in self.factory.peers:
             self.factory.peers.pop(self.remote_nodeid)
-            self.lc_hello.stop()
+            # self.lc_hello.stop()
         print(self.nodeid, "disconnected")
 
     def dataReceived(self, data):
@@ -66,9 +66,9 @@ class MyProtocol(Protocol):
         addr = json.JSONEncoder().encode({'type': 'addr', 'peers': peers})
         self.transport.write("{0}\n".format(peers).encode())
 
-    # def send_hello(self):
-    #     hello = json.dumps({"type": "hi", "ip": self.host})
-    #     self.transport.write("{0}\n".format(hello).encode())
+    def send_hello(self):
+        hello = json.dumps({"type": "hi", "ip": self.host})
+        self.transport.write("{0}\n".format(hello).encode())
 
     def handle_hello(self, data):
         if data['ip'] not in self.factory.peers:
@@ -92,7 +92,7 @@ class MyFactory(Factory):
     def __init__(self, peers, pipe):
         self.peers = peers
         self.pipe = pipe
-        # self.first = True
+        self.first = True
 
     def startFactory(self):
         self.nodeid = generate_nodeid()

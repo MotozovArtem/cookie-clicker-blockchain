@@ -1,38 +1,10 @@
 // Blockchain
 digraph {
 	rankdir=LR size="1200, 800"
-	"063f6788c407f15e5fe2cd287be5a4bc8b4df848d1f77ebb74e266d57b033488" [label="  Hash: 063f6788c407f15e5fe2cd287be5a4bc8b4df848d1f77ebb74e266d57b033488;
-  Author: jytsd;
+	bb3382fe0caed8595ab23dd7aa778455453d74a21d840d5188fa0b58ce62146e [label="  Hash: bb3382fe0caed8595ab23dd7aa778455453d74a21d840d5188fa0b58ce62146e;
+  Author: Artyomf;
   Comment: generic comment;
   Proof: 10;
-  Date: 1521573867.515701;
+  Date: 1521574333.9361649;
   Prev_block: 1;" shape=rectangle]
-	"3f15036e05b6acbc670d797b518bffdf25fc0d29e186d5e590559ecd5b442c23" [label="  Hash: 3f15036e05b6acbc670d797b518bffdf25fc0d29e186d5e590559ecd5b442c23;
-  Author: jytsd;
-  Comment: jhgf;
-  Proof: 10;
-  Date: 1521573875.6844726;
-  Prev_block: 063f6788c407f15e5fe2cd287be5a4bc8b4df848d1f77ebb74e266d57b033488;" shape=rectangle]
-	"063f6788c407f15e5fe2cd287be5a4bc8b4df848d1f77ebb74e266d57b033488" -> "3f15036e05b6acbc670d797b518bffdf25fc0d29e186d5e590559ecd5b442c23"
-	"528dd4f82973d10d4e2fce3ade87826291d7796338e8063dfc959b1d76023b0c" [label="  Hash: 528dd4f82973d10d4e2fce3ade87826291d7796338e8063dfc959b1d76023b0c;
-  Author: jytsd;
-  Comment: jyhted;
-  Proof: 11;
-  Date: 1521573879.458686;
-  Prev_block: 3f15036e05b6acbc670d797b518bffdf25fc0d29e186d5e590559ecd5b442c23;" shape=rectangle]
-	"3f15036e05b6acbc670d797b518bffdf25fc0d29e186d5e590559ecd5b442c23" -> "528dd4f82973d10d4e2fce3ade87826291d7796338e8063dfc959b1d76023b0c"
-	"1d57ec891e941d73ff3f077dd5db7a933e8651c82907cdfedee644a333918a7c" [label="  Hash: 1d57ec891e941d73ff3f077dd5db7a933e8651c82907cdfedee644a333918a7c;
-  Author: Artyom;
-  Comment: Yay;
-  Proof: 10;
-  Date: 1521573902.6595838;
-  Prev_block: 528dd4f82973d10d4e2fce3ade87826291d7796338e8063dfc959b1d76023b0c;" shape=rectangle]
-	"528dd4f82973d10d4e2fce3ade87826291d7796338e8063dfc959b1d76023b0c" -> "1d57ec891e941d73ff3f077dd5db7a933e8651c82907cdfedee644a333918a7c"
-	eb52d92d43521b27f0bf981e3ae50e254ee7f596ac1c65d30fb389f0a0b5f794 [label="  Hash: eb52d92d43521b27f0bf981e3ae50e254ee7f596ac1c65d30fb389f0a0b5f794;
-  Author: Artyom;
-  Comment: Yay;
-  Proof: 11;
-  Date: 1521573928.8696797;
-  Prev_block: 1d57ec891e941d73ff3f077dd5db7a933e8651c82907cdfedee644a333918a7c;" shape=rectangle]
-	"1d57ec891e941d73ff3f077dd5db7a933e8651c82907cdfedee644a333918a7c" -> eb52d92d43521b27f0bf981e3ae50e254ee7f596ac1c65d30fb389f0a0b5f794
 }

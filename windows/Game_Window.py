@@ -7,28 +7,40 @@ from PyQt5 import QtGui
 import materials as resources
 from PyQt5.QtGui import *
 from submodules.windows_settings import setMoveWindow
+from submodules.sys_dialogs import UserDialog, WarningDialog, InfoDialog
 from submodules.Incremental_Thread import  MyThread
 rel_materials_path = "" # Ко всем материалам образаться rel_materials_path + путь к материалы
 
 class Game_Window(QtWidgets.QMainWindow):
 
+    username = None
+
     clicks = 0
+    block_cost = 0
     boost_increment = 0.2
     boost_cost = 10
     boost_count = 0
     thread = None
     mutex = QtCore.QMutex()
 
-    def __init__(self, username=None, parent=None):
+    game_window_start = QtCore.pyqtSignal()
+    game_window_closed = QtCore.pyqtSignal()
+    block_earned = QtCore.pyqtSignal(str)
+    block_earned_with_comment = QtCore.pyqtSignal(str,str)
+    block_missed = QtCore.pyqtSignal(str)
+    block_missed_with_comment = QtCore.pyqtSignal(int)
+    comment_complete = False
+
+    def __init__(self, block_cost, username=None, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         setMoveWindow(self)
-
+        self.block_cost = block_cost
 
         self.MainWindow = uic.loadUi(rel_materials_path + resources.Game_Window_Resources.form, self)
 
         self.user_name.setStyleSheet("color: #fff;");
         self.user_name.setText(username)
-
+        self.username = username
 
         self.MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         self.MainWindow.setAttribute(Qt.WA_NoSystemBackground, True)
@@ -73,6 +85,10 @@ class Game_Window(QtWidgets.QMainWindow):
 
         self.pushButton.clicked.connect(self.boost)
 
+        self.game_window_start.emit()
+        self.block_missed.connect(self.missed_block)
+        self.block_missed_with_comment.connect(self.winner_comment_get)
+
     def mouse_pressed(self, event):
         try:
             if self.m.state() != 2:
@@ -100,6 +116,7 @@ class Game_Window(QtWidgets.QMainWindow):
     def update_clicks(self):
         self.num_of_clicks.setText(str(self.clicks))
         self.check_boost_cond()
+        self.check_block_cond()
 
     def finish(self, event):
         if self.m.currentFrameNumber() == (self.m.frameCount()-1):
@@ -112,6 +129,28 @@ class Game_Window(QtWidgets.QMainWindow):
         else:
             self.pushButton.setStyleSheet("color: rgb(100, 100, 100);")
             self.pushButton.setEnabled(False)
+
+    def check_block_cond(self):
+        if self.block_cost <= self.clicks:
+            self.block_earned.emit(self.username)
+            self.clicks = 0
+            comment = UserDialog(self).get_answer("Proved!!!", "Congratulations!\nYou mined the block.\n Please enter your comment:")
+            self.block_earned_with_comment.emit(self.username, comment)
+
+    def missed_block(self, winner_username):
+        self.clicks = 0
+        first_dialog = None
+        while not self.comment_complete:
+            first_dialog = InfoDialog(self, "Sorry...", "Your opponents,{},have already mined the block!!!\nWait for his comment".format(winner_username))
+        else:
+            self.comment_complete = False
+            first_dialog.close()
+            InfoDialog(self, "The battle continues!","For Honour and Glory!!!")
+            self.update_clicks()
+
+    def winner_comment_get(self, new_block_cost):
+        self.block_cost = new_block_cost
+        self.comment_complete = True
 
     def boost(self):
 
@@ -127,6 +166,7 @@ class Game_Window(QtWidgets.QMainWindow):
     def update_boost_cost(self):
         self.cost_of_boost.setText(str(self.boost_cost))
 
+
     def start_thread(self):
         self.thread = MyThread(self.boost_increment)
         self.timer = QtCore.QTimer()
@@ -135,38 +175,19 @@ class Game_Window(QtWidgets.QMainWindow):
         self.timer.start(1000)
         self.thread.start()
 
-        # if self.thread != None:
-        #     if (self.thread.isRunning() == False):
-        #         self.thread = MyThread(self.boost_increment)
-        #         self.timer = QtCore.QTimer()
-        #         self.timer.timeout.connect(self.thread.increment)
-        #         self.thread.increment_signal.connect(self.increment_clicks)
-        #         self.timer.start(1000)
-        #         self.thread.start()
-        #     else:
-        #         self.thread.terminate()
-        #         self.start_thread()
-        # else:
-        #     self.thread = MyThread(self.boost_increment)
-        #     self.timer = QtCore.QTimer()
-        #     self.timer.timeout.connect(self.thread.increment)
-        #     self.thread.increment_signal.connect(self.increment_clicks)
-        #     self.timer.start(1000)
-        #     self.thread.start()
-
-
     def form_new_boost_cost(self):
         return round((self.boost_cost * 1.07**(self.boost_count+1)),1)
 
     def closeIt(self):
         self.close()
+        self.game_window_closed.emit()
 
 if __name__ == "__main__":
     import sys
 
     rel_materials_path = "..//"
     app = QtWidgets.QApplication(sys.argv)
-    window = Game_Window()
+    window = Game_Window(20)
     setMoveWindow(window)
     window.show()
     sys.exit(app.exec_())

@@ -57,6 +57,8 @@ class UserDialog(QtWidgets.QInputDialog):
         text, ok = self.getText(self.parent, title,question)
         if ok:
             return text
+        else:
+            return None
 
     # icon = UserDialog().get_answer("Question", "Nick:")
 

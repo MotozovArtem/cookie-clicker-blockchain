@@ -6,14 +6,15 @@ from PyQt5.QtCore import *
 from PyQt5 import QtGui
 import materials as resources
 from PyQt5.QtGui import *
-from submodules.sys_dialogs import UserDialog
+from submodules.sys_dialogs import UserDialog, WarningDialog
 from submodules.windows_settings import setMoveWindow
-rel_materials_path = "" # Ко всем материалам образаться rel_materials_path + путь к материалы
+rel_materials_path = "" # Ко всем материалам образаться rel_materials_path + путь к материалам
 
 class Start_Menu(QtWidgets.QMainWindow):
 
     user_name = QtCore.pyqtSignal(str)
     start_game = QtCore.pyqtSignal()
+    start_window_closed = QtCore.pyqtSignal()
 
 
     def __init__(self, parent=None):
@@ -42,8 +43,10 @@ class Start_Menu(QtWidgets.QMainWindow):
     def mouse_pressed(self, event):
         while True:
             nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
-            if nick == None or nick == "":
-                continue
+            if nick == None:
+                break
+            elif nick == "":
+                WarningDialog(self,"Warning", "Please enter your nickname").exec_()
             else:
                 self.user_name.emit(nick)
                 self.start_game.emit()
@@ -52,6 +55,7 @@ class Start_Menu(QtWidgets.QMainWindow):
 
     def closeIt(self):
         self.MainWindow.close()
+        self.start_window_closed.emit()
 
 if __name__ == "__main__":
     import sys

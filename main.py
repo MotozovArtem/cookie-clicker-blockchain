@@ -5,9 +5,13 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import *
+from multiprocessing import Process, Pipe
+from multiplayer import network, start_menu
+
 
 class Main_Controler():
     username = ""
+
     def __init__(self):
         self.show_start_menu()
 
@@ -21,8 +25,21 @@ class Main_Controler():
         self.username = name
 
     def start_offline_game(self):
-        game_menu = Game_Window.Game_Window(self.username)
+        game_menu = Game_Window.Game_Window(20, self.username)
         game_menu.show()
+        game_menu.multiplayer_game_start.connect(self.start_online_game)
+
+    def start_online_game(self):
+        try:
+            net_pipe, gui_pipe = Pipe()
+            network_process = Process(target=network.main, args=(net_pipe,))
+            app_gui = Process(target=start_menu.alt_main, args=(gui_pipe, self.username,))
+            app_gui.start()
+            network_process.start()
+            app_gui.join()
+            network_process.terminate()
+        except Exception as e:
+            print(e.__str__())
 
 
 if __name__ == "__main__":

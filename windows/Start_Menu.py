@@ -8,14 +8,14 @@ import materials as resources
 from PyQt5.QtGui import *
 from submodules.sys_dialogs import UserDialog, WarningDialog
 from submodules.windows_settings import setMoveWindow
-rel_materials_path = "" # Ко всем материалам образаться rel_materials_path + путь к материалам
+rel_materials_path = ""  # Ко всем материалам образаться rel_materials_path + путь к материалам
+
 
 class Start_Menu(QtWidgets.QMainWindow):
 
     user_name = QtCore.pyqtSignal(str)
     start_game = QtCore.pyqtSignal()
     start_window_closed = QtCore.pyqtSignal()
-
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
@@ -27,7 +27,8 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.MainWindow.setAttribute(Qt.WA_TranslucentBackground, True)
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Start_Menu_Resources.close_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Start_Menu_Resources.close_icon),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButton.setIcon(icon)
 
         self.main_btn.setPixmap(QtGui.QPixmap(rel_materials_path + resources.Start_Menu_Resources.start_menu_gif))
@@ -36,17 +37,16 @@ class Start_Menu(QtWidgets.QMainWindow):
         self.m.start()
         self.main_btn.setMovie(self.m)
 
-
         self.main_btn.mousePressEvent = self.mouse_pressed
         self.pushButton.clicked.connect(self.closeIt)
 
     def mouse_pressed(self, event):
         while True:
             nick = UserDialog(self).get_answer("Sign up", "Your Nickname:")
-            if nick == None:
+            if nick is None:
                 break
             elif nick == "":
-                WarningDialog(self,"Warning", "Please enter your nickname").exec_()
+                WarningDialog(self, "Warning", "Please enter your nickname").exec_()
             else:
                 self.user_name.emit(nick)
                 self.start_game.emit()
@@ -56,6 +56,7 @@ class Start_Menu(QtWidgets.QMainWindow):
     def closeIt(self):
         self.MainWindow.close()
         self.start_window_closed.emit()
+
 
 if __name__ == "__main__":
     import sys

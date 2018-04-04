@@ -9,7 +9,8 @@ from PyQt5.QtGui import *
 from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import UserDialog, WarningDialog, InfoDialog
 from submodules.Incremental_Thread import  MyThread
-rel_materials_path = "" # Ко всем материалам образаться rel_materials_path + путь к материалы
+rel_materials_path = ""  # Ко всем материалам образаться rel_materials_path + путь к материалы
+
 
 class Game_Window(QtWidgets.QMainWindow):
 
@@ -23,10 +24,12 @@ class Game_Window(QtWidgets.QMainWindow):
     thread = None
     mutex = QtCore.QMutex()
 
+    multiplayer_game_start = QtCore.pyqtSignal()
+    game_window_show = QtCore.pyqtSignal()
     game_window_start = QtCore.pyqtSignal()
     game_window_closed = QtCore.pyqtSignal()
     block_earned = QtCore.pyqtSignal(str)
-    block_earned_with_comment = QtCore.pyqtSignal(str,str)
+    block_earned_with_comment = QtCore.pyqtSignal(str, str)
     block_missed = QtCore.pyqtSignal(str)
     block_missed_with_comment = QtCore.pyqtSignal(int)
     comment_complete = False
@@ -35,10 +38,11 @@ class Game_Window(QtWidgets.QMainWindow):
         QtWidgets.QWidget.__init__(self, parent)
         setMoveWindow(self)
         self.block_cost = block_cost
+        self.cost_increment = 5
 
         self.MainWindow = uic.loadUi(rel_materials_path + resources.Game_Window_Resources.form, self)
 
-        self.user_name.setStyleSheet("color: #fff;");
+        self.user_name.setStyleSheet("color: #fff;")
         self.user_name.setText(username)
         self.username = username
 
@@ -59,6 +63,8 @@ class Game_Window(QtWidgets.QMainWindow):
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Game_Window_Resources.reset_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.reset.setIcon(icon3)
+        self.reset.clicked.connect(self.multiplayer_start)
+
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Game_Window_Resources.statistic_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -104,14 +110,12 @@ class Game_Window(QtWidgets.QMainWindow):
         self.mutex.unlock()
         self.update_clicks()
 
-
-    def increment_clicks(self,inc):
+    def increment_clicks(self, inc):
         self.mutex.lock()
         self.clicks = self.clicks + inc
         self.clicks = round(self.clicks, 1)
         self.mutex.unlock()
         self.update_clicks()
-
 
     def update_clicks(self):
         self.num_of_clicks.setText(str(self.clicks))
@@ -134,18 +138,21 @@ class Game_Window(QtWidgets.QMainWindow):
         if self.block_cost <= self.clicks:
             self.block_earned.emit(self.username)
             self.clicks = 0
-            comment = UserDialog(self).get_answer("Proved!!!", "Congratulations!\nYou mined the block.\n Please enter your comment:")
+            self.block_cost += self.cost_increment
+            comment = UserDialog(self).get_answer("Proved!!!", "Congratulations!\nYou mined the block."
+                                                               "\n Please enter your comment:")
             self.block_earned_with_comment.emit(self.username, comment)
 
     def missed_block(self, winner_username):
         self.clicks = 0
         first_dialog = None
         while not self.comment_complete:
-            first_dialog = InfoDialog(self, "Sorry...", "Your opponents,{},have already mined the block!!!\nWait for his comment".format(winner_username))
+            first_dialog = InfoDialog(self, "Sorry...", "Your opponent,{},have already mined the block!!!"
+                                                        "\nWait for his comment".format(winner_username))
         else:
             self.comment_complete = False
             first_dialog.close()
-            InfoDialog(self, "The battle continues!","For Honour and Glory!!!")
+            InfoDialog(self, "The battle continues!", "For Honour and Glory!!!")
             self.update_clicks()
 
     def winner_comment_get(self, new_block_cost):
@@ -153,11 +160,9 @@ class Game_Window(QtWidgets.QMainWindow):
         self.comment_complete = True
 
     def boost(self):
-
-        self.clicks = round(self.clicks - self.boost_cost,1)
-
+        self.clicks = round(self.clicks - self.boost_cost, 1)
         self.update_clicks()
-        self.boost_count +=1
+        self.boost_count += 1
         self.boost_cost = self.form_new_boost_cost()
         self.update_boost_cost()
         self.start_thread()
@@ -165,7 +170,6 @@ class Game_Window(QtWidgets.QMainWindow):
 
     def update_boost_cost(self):
         self.cost_of_boost.setText(str(self.boost_cost))
-
 
     def start_thread(self):
         self.thread = MyThread(self.boost_increment)
@@ -176,11 +180,17 @@ class Game_Window(QtWidgets.QMainWindow):
         self.thread.start()
 
     def form_new_boost_cost(self):
-        return round((self.boost_cost * 1.07**(self.boost_count+1)),1)
+        return round((self.boost_cost * 1.07**(self.boost_count+1)), 1)
+
+    def multiplayer_start(self):
+        self.hide()
+        self.multiplayer_game_start.emit()
+        self.show()
 
     def closeIt(self):
         self.close()
         self.game_window_closed.emit()
+
 
 if __name__ == "__main__":
     import sys

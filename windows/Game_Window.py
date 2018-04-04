@@ -61,7 +61,7 @@ class Game_Window(QtWidgets.QMainWindow):
         self.pushButton.setEnabled(False)
 
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Game_Window_Resources.reset_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Game_Window_Resources.multiplayer_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.reset.setIcon(icon3)
         self.reset.clicked.connect(self.multiplayer_start)
 

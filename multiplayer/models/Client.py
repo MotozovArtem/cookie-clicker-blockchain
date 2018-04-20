@@ -4,7 +4,7 @@ import socket
 import nmap.nmap as nmap
 import threading
 
-
+import pprint
 class Client:
     server_address = None
     server_port = None
@@ -59,8 +59,11 @@ class Client:
 
     def get_net_info(self):
         try:
-            addr = netifaces.ifaddresses(self.client_interfaces[2])
+            addr = netifaces.ifaddresses(self.client_interfaces[3])
             client_addr = addr[netifaces.AF_INET][0]['addr']
+
+            # addr = netifaces.ifaddresses(interfaces[3])
+            # client_addr = addr[netifaces.AF_INET][0]["addr"]
         except Exception:
             addr = netifaces.ifaddresses(self.client_interfaces[1])
         return addr
@@ -86,16 +89,35 @@ class Client:
         return self.sibling_peers
 
     def define_type_message(self, mes):
+        print("Client data came to client")
         if type(mes) is str and mes.find("Notification") != -1:
             self.notifi_flag = True
         else:
             if type(mes) is list:
-                self.blockchain.chain = mes
+                print("It`s chain")
+                # pprint.pprint()
+                print("checking age")
+                print("Their: ", float(mes[0]["timestamp"]), "Our: ", self.blockchain.chain[0]["timestamp"])
+                if float(mes[0]["timestamp"]) < self.blockchain.chain[0]["timestamp"]:
+                    print("Our genesis is younger")
+                    self.blockchain.chain = mes
+                    print("Client chain added successfully")
+
+                pprint.pprint(mes)
             elif type(mes) is dict:
+                print("It`s block")
+
+
+
+
                 if self.blockchain.chain[-1]["hash"] == mes["previous_hash"]:
+                    print("Client add block to blockhain successfully")
                     self.blockchain.chain.append(mes)
                     self.blockchain.curr_proof = mes['proof']
+                else:
+                    print("Client failed to add block")
             elif mes == 'get_chain':
+                print("They ask to send chain")
                 self.pipe.send(self.blockchain.chain)
 
 

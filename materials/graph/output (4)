@@ -1,0 +1,17 @@
+// Blockchain
+digraph {
+	rankdir=LR size="1200, 800"
+	"08e48a99bd8e45e0b159c6a10da9397031b5fb7b29f78d5bf90391d492cd6e7b" [label="  Hash: 08e48a99bd8e45e0b159c6a10da9397031b5fb7b29f78d5bf90391d492cd6e7b;
+  Author: aaa;
+  Comment: generic comment;
+  Proof: 10;
+  Date: 1524253682.5007524;
+  Prev_block: 1;" shape=rectangle]
+	"1000dd162beb2b63658e33e2f7b0d2f65223f88acbde5ed52d89e9a7d3e3a005" [label="  Hash: 1000dd162beb2b63658e33e2f7b0d2f65223f88acbde5ed52d89e9a7d3e3a005;
+  Author: bbb;
+  Comment: test_note;
+  Proof: 10;
+  Date: 1524253740.1475735;
+  Prev_block: 08e48a99bd8e45e0b159c6a10da9397031b5fb7b29f78d5bf90391d492cd6e7b;" shape=rectangle]
+	"08e48a99bd8e45e0b159c6a10da9397031b5fb7b29f78d5bf90391d492cd6e7b" -> "1000dd162beb2b63658e33e2f7b0d2f65223f88acbde5ed52d89e9a7d3e3a005"
+}

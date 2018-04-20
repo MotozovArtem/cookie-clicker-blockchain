@@ -1,24 +1,38 @@
 // Blockchain
 digraph {
 	rankdir=LR size="1200, 800"
-	"517bbc27ac63a5d03b04c5cf8935f161c25fc8b458365165829ec568385bae99" [label="  Hash: 517bbc27ac63a5d03b04c5cf8935f161c25fc8b458365165829ec568385bae99;
-  Author: paul;
+	"14a9f8457ca059861dd791d2170b46c4da328bce5d0a18e5af1c2f6e5b688d46" [label="  Hash: 14a9f8457ca059861dd791d2170b46c4da328bce5d0a18e5af1c2f6e5b688d46;
+  Author: comp;
   Comment: generic comment;
   Proof: 10;
-  Date: 1522871598.4736125;
+  Date: 1524262484.475407;
   Prev_block: 1;" shape=rectangle]
-	"11f55ec0b0867ef7ed6a2de40f29a0092c60e2acee8a534ea32281c9f7acba1f" [label="  Hash: 11f55ec0b0867ef7ed6a2de40f29a0092c60e2acee8a534ea32281c9f7acba1f;
-  Author: paul;
-  Comment: Default comment;
+	a85e4ebdc1edbcd8399e0795a08ceeb142405a3472452b5cd4a40ac3aa9b26af [label="  Hash: a85e4ebdc1edbcd8399e0795a08ceeb142405a3472452b5cd4a40ac3aa9b26af;
+  Author: comp;
+  Comment: comment 1;
   Proof: 10;
-  Date: 1522871634.7302406;
-  Prev_block: 517bbc27ac63a5d03b04c5cf8935f161c25fc8b458365165829ec568385bae99;" shape=rectangle]
-	"517bbc27ac63a5d03b04c5cf8935f161c25fc8b458365165829ec568385bae99" -> "11f55ec0b0867ef7ed6a2de40f29a0092c60e2acee8a534ea32281c9f7acba1f"
-	c82d6c88252595321af60336e42871674d1db7164cd5d4ada199bb0c55295481 [label="  Hash: c82d6c88252595321af60336e42871674d1db7164cd5d4ada199bb0c55295481;
-  Author: paul;
-  Comment: Default comment;
+  Date: 1524262520.6813934;
+  Prev_block: 14a9f8457ca059861dd791d2170b46c4da328bce5d0a18e5af1c2f6e5b688d46;" shape=rectangle]
+	"14a9f8457ca059861dd791d2170b46c4da328bce5d0a18e5af1c2f6e5b688d46" -> a85e4ebdc1edbcd8399e0795a08ceeb142405a3472452b5cd4a40ac3aa9b26af
+	"7658e319a5f1dbf19e78987eeffd680a789b3fa2c9f7907b2c9d3778117e24f4" [label="  Hash: 7658e319a5f1dbf19e78987eeffd680a789b3fa2c9f7907b2c9d3778117e24f4;
+  Author: comp;
+  Comment: test;
   Proof: 11;
-  Date: 1522871638.048655;
-  Prev_block: 11f55ec0b0867ef7ed6a2de40f29a0092c60e2acee8a534ea32281c9f7acba1f;" shape=rectangle]
-	"11f55ec0b0867ef7ed6a2de40f29a0092c60e2acee8a534ea32281c9f7acba1f" -> c82d6c88252595321af60336e42871674d1db7164cd5d4ada199bb0c55295481
+  Date: 1524262610.8616085;
+  Prev_block: a85e4ebdc1edbcd8399e0795a08ceeb142405a3472452b5cd4a40ac3aa9b26af;" shape=rectangle]
+	a85e4ebdc1edbcd8399e0795a08ceeb142405a3472452b5cd4a40ac3aa9b26af -> "7658e319a5f1dbf19e78987eeffd680a789b3fa2c9f7907b2c9d3778117e24f4"
+	c8ae62981e66469bae97ecb0434828d08668efd8e103a946a0a5a4eac966bddf [label="  Hash: c8ae62981e66469bae97ecb0434828d08668efd8e103a946a0a5a4eac966bddf;
+  Author: note;
+  Comment: note test 1;
+  Proof: 11;
+  Date: 1524262649.4810793;
+  Prev_block: 7658e319a5f1dbf19e78987eeffd680a789b3fa2c9f7907b2c9d3778117e24f4;" shape=rectangle]
+	"7658e319a5f1dbf19e78987eeffd680a789b3fa2c9f7907b2c9d3778117e24f4" -> c8ae62981e66469bae97ecb0434828d08668efd8e103a946a0a5a4eac966bddf
+	"2b1e598432edf2aa834794f9d10c88ceeb5e1ebff4632bddde1a4e63b42a2bcd" [label="  Hash: 2b1e598432edf2aa834794f9d10c88ceeb5e1ebff4632bddde1a4e63b42a2bcd;
+  Author: note;
+  Comment: do not know the price;
+  Proof: 12;
+  Date: 1524262929.038542;
+  Prev_block: c8ae62981e66469bae97ecb0434828d08668efd8e103a946a0a5a4eac966bddf;" shape=rectangle]
+	c8ae62981e66469bae97ecb0434828d08668efd8e103a946a0a5a4eac966bddf -> "2b1e598432edf2aa834794f9d10c88ceeb5e1ebff4632bddde1a4e63b42a2bcd"
 }

@@ -4,13 +4,14 @@ from twisted.internet import reactor
 from twisted.internet.task import LoopingCall
 
 import nmap.nmap as nmap
-
+import pprint
 import json
 import os
 import hashlib
 from time import time
 import netifaces
-
+import sys
+sys.path.append('C:\\Program Files (x86)\\Nmap')
 
 def generate_nodeid():
     return hashlib.sha256(os.urandom(256 // 8)).hexdigest()[:10]
@@ -34,7 +35,9 @@ class MyProtocol(Protocol):
         self.host = "{0}:{1}".format(host.host, host.port)
         if host.host not in self.factory.peers:
             self.factory.peers.append(host.host)
+        print("---------------------------------------------------------------------")
         print("Connection from", self.transport.getPeer(), self.factory.peers)
+
         if self.factory.first:
             self.send_hello()
             self.factory.first = False
@@ -43,19 +46,31 @@ class MyProtocol(Protocol):
         if self.remote_nodeid in self.factory.peers:
             self.factory.peers.pop(self.remote_nodeid)
             # self.lc_hello.stop()
+        print("---------------------------------------------------------------------")
         print(self.nodeid, "disconnected")
 
+
     def dataReceived(self, data):
-        print(data)
+        print("---------------------------------------------------------------------")
+        print("DATA RECEIVED")
+        pprint.pprint(data)
         message = json.JSONDecoder().decode(data.decode())
         if message['type'] == 'hi':
+            print("---------------------------------------------------------------------")
+            print("Network It`s hello message")
             self.handle_hello(message)
         elif message['type'] == "block":
+            print("---------------------------------------------------------------------")
+            print("Network It`s block")
             self.handle_block(message['block'])
         elif message['type'] == "chain":
+            print("---------------------------------------------------------------------")
+            print("Network It`s chain")
             self.handle_chain(message['chain'])
 
     def send_addr(self, mine=False):
+        print("---------------------------------------------------------------------")
+        print("Network Trying to send addr")
         now = time()
         if mine:
             peers = [self.host]
@@ -67,10 +82,18 @@ class MyProtocol(Protocol):
         self.transport.write("{0}\n".format(peers).encode())
 
     def send_hello(self):
+        print("---------------------------------------------------------------------")
+        print("Network We are sending hello")
         hello = json.dumps({"type": "hi", "ip": self.host})
         self.transport.write("{0}\n".format(hello).encode())
+        # import time
+        # time.sleep(5)
 
     def handle_hello(self, data):
+        import time
+        time.sleep(3)
+        print("---------------------------------------------------------------------")
+        print("Network We catched hello")
         if data['ip'] not in self.factory.peers:
             self.factory.peers.append(data['ip'])
         self.pipe.send("get_chain")
@@ -78,13 +101,23 @@ class MyProtocol(Protocol):
         self.transport.write("{0}\n".format(chain_for_send).encode())
 
     def send_block(self, block):
+        print("---------------------------------------------------------------------")
+        print("Network We send ")
         d_block = json.dumps(block)
         self.transport.write(d_block)
 
     def handle_chain(self, chain):
+        print("---------------------------------------------------------------------")
+        print("Network We catched chain")
+        pprint.pprint(chain)
         self.pipe.send(chain)
 
     def handle_block(self, block):
+        print("---------------------------------------------------------------------")
+        print("Network We catched  block")
+        pprint.pprint(block)
+        # print("TYPE:")
+        # print(type(block["block"]["timestamp"]))
         self.pipe.send(block)
 
 
@@ -114,15 +147,26 @@ def get_netID(net_info):
 
 
 def discover_hosts(mask, net_id):
+    print("Scanning for ports...")
     port_scanner = nmap.PortScanner()
     port_scanner.scan(hosts='{0}/{1}'.format(net_id, mask), arguments='-n -sP')
+    print("Scanning complete")
     return port_scanner.all_hosts()
 
 
 def main(pipe):
     interfaces = netifaces.interfaces()
+    # import pprint
+    # pprint.pprint(interfaces)
+    #
+    # for i in range(len(interfaces)):
+    #     try:
+    #         print(i,"    ",netifaces.ifaddresses(interfaces[i]))
+    #         pprint.pprint(interfaces.ifaddresses(interfaces[3]))
+    #     except Exception as e:
+    #         continue
     try:
-        addr = netifaces.ifaddresses(interfaces[2])
+        addr = netifaces.ifaddresses(interfaces[3])
         host_addr = addr[netifaces.AF_INET][0]["addr"]
     except KeyError:
         addr = netifaces.ifaddresses(interfaces[1])

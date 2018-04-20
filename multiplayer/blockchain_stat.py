@@ -105,7 +105,7 @@ class Ui_Form(QtWidgets.QWidget):
         return str(text)
 
     def set_blockchain_graph(self, blockchain):
-        # pprint.pprint(blockchain)
+        pprint.pprint(blockchain)
         if len(blockchain) != 0:
             dot = Digraph(comment='Blockchain', format="jpg")
             dot.attr(rankdir='LR', size='1200, 800')

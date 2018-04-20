@@ -7,8 +7,10 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import *
 from multiprocessing import Process, Pipe
 from multiplayer import network, start_menu
-
-
+# import sys
+# sys.path.append('C:\\Program Files (x86)\\Nmap')
+import os
+os.environ['PATH'] = os.environ['PATH'] + ';C:\\Program Files (x86)\\Nmap;'
 class Main_Controler():
     username = ""
 

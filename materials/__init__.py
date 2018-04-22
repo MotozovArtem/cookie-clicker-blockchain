@@ -37,8 +37,9 @@ class Game_Window_Resources(CommonSources):
     game_menu_gif = path_to_gifs + "mining.gif"
     #------IMAGES-------
     #------ICONS-------
-    reset_icon = path_to_icons + "Reset_104px.png"
+    multiplayer_icon = path_to_icons + "Multiple Devices_100px.png"
     info_icon = path_to_icons + "Info_100px.png"
     statistic_icon = path_to_icons + "Statistics_100px.png"
+    return_icon = path_to_icons + "Return_104px.png"
 
 

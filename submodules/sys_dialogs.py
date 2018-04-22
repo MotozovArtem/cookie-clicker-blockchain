@@ -48,12 +48,13 @@ class UserDialog(QtWidgets.QInputDialog):
     def __init__(self,  parent):
         super(QtWidgets.QDialog, self).__init__(parent)
         self.parent = parent
-        self.setStyleSheet("background-color:RGB(0,0,0); color:#FF0000")
+        self.setStyleSheet("background-color:RGB(0,0,0); color:#FF0000;")
         self.setWindowModality(1)
 
 
     def get_answer(self,title, question):
         self.parent.setStyleSheet("background-color:RGB(0,0,0); color:#FF0000")
+        # self.setStyleSheet("background-color:RGB(0,0,0); color:#FF0000")
         text, ok = self.getText(self.parent, title,question)
         if ok:
             return text

@@ -1,0 +1,10 @@
+// Blockchain
+digraph {
+	rankdir=LR size="1200, 800"
+	"1db10e63092e823645b564bafc676fb061bf9ede42da33ea9dd81fd1eefe2362" [label="  Hash: 1db10e63092e823645b564bafc676fb061bf9ede42da33ea9dd81fd1eefe2362;
+  Author: comp;
+  Comment: generic comment;
+  Proof: 10;
+  Date: 1524260626.7573733;
+  Prev_block: 1;" shape=rectangle]
+}

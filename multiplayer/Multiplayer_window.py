@@ -10,7 +10,7 @@ from submodules.windows_settings import setMoveWindow
 from submodules.sys_dialogs import UserDialog, WarningDialog, InfoDialog
 from submodules.Incremental_Thread import  MyThread
 rel_materials_path = ""  # Ко всем материалам образаться rel_materials_path + путь к материалы
-
+from multiplayer.blockchain_stat import Ui_Form
 
 class Game_Window(QtWidgets.QMainWindow):
 
@@ -34,9 +34,12 @@ class Game_Window(QtWidgets.QMainWindow):
     block_missed_with_comment = QtCore.pyqtSignal(int)
     comment_complete = False
 
-    def __init__(self, block_cost, username=None, parent=None):
+    def __init__(self, block_cost, miner, client, username=None, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         setMoveWindow(self)
+        self.parent = parent
+        self.miner = miner
+        self.client = client
         self.block_cost = block_cost
         self.cost_increment = 5
 
@@ -54,14 +57,15 @@ class Game_Window(QtWidgets.QMainWindow):
         self.num_of_clicks.setStyleSheet("color: rgb(255, 255, 255);")
         self.num_of_clicks.setText("0")
         self.label_5.setStyleSheet("color: rgb(255, 255, 255);")
-        self.label_5.setText("Boost Cost")
+        self.label_5.setText("")
         self.cost_of_boost.setStyleSheet("color: rgb(255, 255, 255);")
-        self.cost_of_boost.setText(str(self.boost_cost))
+        self.cost_of_boost.setText("")
         self.pushButton.setStyleSheet("color: rgb(100, 100, 100);")
         self.pushButton.setEnabled(False)
+        self.pushButton.setVisible(False)
 
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Game_Window_Resources.multiplayer_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(rel_materials_path + resources.Game_Window_Resources.return_icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.reset.setIcon(icon3)
         self.reset.clicked.connect(self.multiplayer_start)
 
@@ -90,6 +94,7 @@ class Game_Window(QtWidgets.QMainWindow):
         self.exit.clicked.connect(self.closeIt)
 
         self.pushButton.clicked.connect(self.boost)
+        self.stat.clicked.connect(self.show_stat)
 
         self.game_window_start.emit()
         self.block_missed.connect(self.missed_block)
@@ -102,6 +107,13 @@ class Game_Window(QtWidgets.QMainWindow):
             self.user_clicks()
         except Exception as e:
             print(e)
+
+
+    def show_stat(self):
+        window = Ui_Form(self, self.miner.blockchain.chain)  # отсюда вызываю функцию получения статистики по блокчейну
+        setMoveWindow(window)  # в blockchain_stat в функции get_block_desc показано как я представляю структуру блока
+        self.hide()
+        window.show()
 
     def user_clicks(self):
         self.mutex.lock()
@@ -142,6 +154,7 @@ class Game_Window(QtWidgets.QMainWindow):
             comment = UserDialog(self).get_answer("Proved!!!", "Congratulations!\nYou mined the block."
                                                                "\n Please enter your comment:")
             self.block_earned_with_comment.emit(self.username, comment)
+            self.miner.update(comment)
 
     def missed_block(self, winner_username):
         self.clicks = 0

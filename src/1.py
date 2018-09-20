@@ -3,6 +3,7 @@ from twisted.internet import reactor
 
 from socket import SOL_SOCKET, SO_BROADCAST
 
+
 class EchoClientDatagramProtocol(DatagramProtocol):
     strings = [
         "Hello, worldaawdawd!",

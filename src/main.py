@@ -31,7 +31,6 @@ class Main_Controler():
         game_menu.show()
         game_menu.multiplayer_game_start.connect(self.start_online_game)
 
-
     def start_online_game(self):
         try:
             net_pipe, gui_pipe = Pipe()
